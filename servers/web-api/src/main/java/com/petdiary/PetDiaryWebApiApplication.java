@@ -1,13 +1,11 @@
-package com.petdiary.petdiary;
+package com.petdiary;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class PetDiaryApplication {
-
+public class PetDiaryWebApiApplication {
     public static void main(String[] args) {
-        SpringApplication.run(PetDiaryApplication.class, args);
+        SpringApplication.run(PetDiaryWebApiApplication.class, args);
     }
-
 }

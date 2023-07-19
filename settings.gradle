@@ -1,1 +1,5 @@
 rootProject.name = 'pet-diary'
+include 'core'
+include 'servers:web-api'
+findProject(':servers:web-api')?.name = 'web-api'
+
