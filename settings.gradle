@@ -2,4 +2,8 @@ rootProject.name = 'pet-diary'
 include 'core'
 include 'servers:web-api'
 findProject(':servers:web-api')?.name = 'web-api'
+include 'domain:rds-core'
+findProject(':domain:rds-core')?.name = 'rds-core'
+include 'domain:rds-petdiarydb'
+findProject(':domain:rds-petdiarydb')?.name = 'rds-petdiarydb'
 

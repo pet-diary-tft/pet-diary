@@ -1,0 +1,21 @@
+spring:
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create
+
+petdiary:
+  master:
+    datasource:
+      jdbc-url: jdbc:mysql://localhost:3306/pet_diary
+      username: root
+      password: P@ssw0rd
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      maximum-pool-size: 5
+  slave:
+    datasource:
+      jdbc-url: jdbc:mysql://localhost:3306/pet_diary
+      username: root
+      password: P@ssw0rd
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      maximum-pool-size: 5
