@@ -9,5 +9,7 @@
   CREATE USER 'petdiaryuser'@'%' IDENTIFIED BY '1q2w3e4r5t@#';
   CREATE DATABASE pet_diary;
   GRANT SELECT, INSERT, UPDATE, DELETE ON pet_diary.* TO 'petdiaryuser'@'%';
+  CREATE DATABASE pet_diary_membership;
+  GRANT SELECT, INSERT, UPDATE, DELETE ON pet_diary_membership.* TO 'petdiaryuser'@'%';
   FLUSH PRIVILEGES;
   ```

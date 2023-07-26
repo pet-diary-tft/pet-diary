@@ -6,4 +6,8 @@ include 'domain:rds-core'
 findProject(':domain:rds-core')?.name = 'rds-core'
 include 'domain:rds-petdiarydb'
 findProject(':domain:rds-petdiarydb')?.name = 'rds-petdiarydb'
+include 'servers:auth-api'
+findProject(':servers:auth-api')?.name = 'auth-api'
+include 'domain:rds-petdiarymembershipdb'
+findProject(':domain:rds-petdiarymembershipdb')?.name = 'rds-petdiarymembershipdb'
 

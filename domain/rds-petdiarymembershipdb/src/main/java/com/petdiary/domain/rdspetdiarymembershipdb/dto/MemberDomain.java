@@ -1,4 +1,4 @@
-package com.petdiary.domain.rdspetdiarydb.dto;
+package com.petdiary.domain.rdspetdiarymembershipdb.dto;
 
 import lombok.Builder;
 import lombok.Getter;

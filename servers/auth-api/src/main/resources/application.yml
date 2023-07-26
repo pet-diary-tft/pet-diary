@@ -1,0 +1,42 @@
+server:
+  port: 8081
+  error:
+    whitelabel:
+      enabled: false
+  servlet:
+    context-path: /
+
+spring:
+  jpa:
+
+    open-in-view: false
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 500
+        default_batch_fetch_size: 1000
+        batch_fetch_style: dynamic
+  mvc:
+    throw-exception-if-no-handler-found: true
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  web:
+    resources:
+      add-mappings: false
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  devtools:
+    livereload:
+      enabled: false
+  data:
+    web:
+      pageable:
+        default-page-size: 20
+        max-page-size: 100
+        one-indexed-parameters: true

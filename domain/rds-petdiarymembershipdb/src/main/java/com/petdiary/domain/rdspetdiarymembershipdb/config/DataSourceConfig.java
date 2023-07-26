@@ -1,8 +1,8 @@
-package com.petdiary.domain.rdspetdiarydb.config;
+package com.petdiary.domain.rdspetdiarymembershipdb.config;
 
 import com.petdiary.domain.rdscore.ReplicationRoutingDataSource;
-import com.petdiary.domain.rdspetdiarydb.properties.PetDiaryMasterDataSourceProperties;
-import com.petdiary.domain.rdspetdiarydb.properties.PetDiarySlaveDataSourceProperties;
+import com.petdiary.domain.rdspetdiarymembershipdb.properties.PetDiaryMembershipMasterDataSourceProperties;
+import com.petdiary.domain.rdspetdiarymembershipdb.properties.PetDiaryMembershipSlaveDataSourceProperties;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -11,13 +11,13 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.sql.DataSource;
 
-@Configuration("petDiaryDataSourceConfig")
+@Configuration("petDiaryMembershipDataSourceConfig")
 @RequiredArgsConstructor
 public class DataSourceConfig {
-    private final PetDiaryMasterDataSourceProperties masterDataSourceProperties;
-    private final PetDiarySlaveDataSourceProperties slaveDataSourceProperties;
+    private final PetDiaryMembershipMasterDataSourceProperties masterDataSourceProperties;
+    private final PetDiaryMembershipSlaveDataSourceProperties slaveDataSourceProperties;
 
-    @Bean("petDiaryMasterDataSource")
+    @Bean("petDiaryMembershipMasterDataSource")
     public DataSource masterDataSource() {
         HikariDataSource dataSource = new HikariDataSource();
         dataSource.setJdbcUrl(masterDataSourceProperties.getJdbcUrl());
@@ -28,7 +28,7 @@ public class DataSourceConfig {
         return dataSource;
     }
 
-    @Bean("petDiarySlaveDataSource")
+    @Bean("petDiaryMembershipSlaveDataSource")
     public DataSource slaveDataSource() {
         HikariDataSource dataSource = new HikariDataSource();
         dataSource.setJdbcUrl(slaveDataSourceProperties.getJdbcUrl());
@@ -39,10 +39,10 @@ public class DataSourceConfig {
         return dataSource;
     }
 
-    @Bean("petDiaryRoutingDataSource")
+    @Bean("petDiaryMembershipRoutingDataSource")
     public DataSource routingDataSource(
-            @Qualifier("petDiaryMasterDataSource") DataSource masterDataSource,
-            @Qualifier("petDiarySlaveDataSource") DataSource slaveDataSource
+            @Qualifier("petDiaryMembershipMasterDataSource") DataSource masterDataSource,
+            @Qualifier("petDiaryMembershipSlaveDataSource") DataSource slaveDataSource
     ) {
         ReplicationRoutingDataSource routingDataSource = new ReplicationRoutingDataSource();
         routingDataSource.setMasterSlave(masterDataSource, slaveDataSource);

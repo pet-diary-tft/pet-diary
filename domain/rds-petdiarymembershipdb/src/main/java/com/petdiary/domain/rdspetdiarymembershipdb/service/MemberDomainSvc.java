@@ -1,7 +1,7 @@
-package com.petdiary.domain.rdspetdiarydb.service;
+package com.petdiary.domain.rdspetdiarymembershipdb.service;
 
-import com.petdiary.domain.rdspetdiarydb.dto.MemberDomain;
-import com.petdiary.domain.rdspetdiarydb.repository.MemberRepository;
+import com.petdiary.domain.rdspetdiarymembershipdb.dto.MemberDomain;
+import com.petdiary.domain.rdspetdiarymembershipdb.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
