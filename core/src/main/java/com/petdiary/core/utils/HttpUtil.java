@@ -1,8 +1,15 @@
 package com.petdiary.core.utils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.petdiary.core.dto.ComResponseDto;
+import com.petdiary.core.dto.ComResultDto;
+import com.petdiary.core.exception.ExceptionInfoConfig;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.lang.Nullable;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -82,5 +89,61 @@ public class HttpUtil {
         else {
             return fullValue;
         }
+    }
+
+    /**
+     * HttpServletRequest에서 ymlKey 속성값을 읽어 원하는 에러메시지를 반환할 수 있습니다.
+     */
+    public static void setAccessDeniedHandlerResponse(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            ExceptionInfoConfig exceptionInfoConfig,
+            ObjectMapper objectMapper
+    ) throws IOException {
+        int statusCode = HttpStatus.FORBIDDEN.value();
+
+        String ymlKey = "forbidden";
+        String rAtr = (String) request.getAttribute("ymlKey");
+        if (StringUtil.hasText(rAtr)) {
+            ymlKey = rAtr;
+        }
+
+        ComResultDto resultDto = exceptionInfoConfig.getResultDto(ymlKey);
+        ComResponseDto<Void> result = new ComResponseDto<>();
+        result.getResult().setHttpStatusCode(statusCode);
+        result.getResult().setCode(resultDto.getCode());
+        result.getResult().setMessage(resultDto.getMessage());
+
+        response.setStatus(statusCode);
+        response.setContentType("application/json;charset=utf-8");
+        response.getWriter().print(objectMapper.writeValueAsString(result));
+    }
+
+    /**
+     * HttpServletRequest에서 ymlKey 속성값을 읽어 원하는 에러메시지를 반환할 수 있습니다.
+     */
+    public static void setAuthenticationEntryPointResponse(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            ExceptionInfoConfig exceptionInfoConfig,
+            ObjectMapper objectMapper
+    ) throws IOException {
+        int statusCode = HttpStatus.UNAUTHORIZED.value();
+
+        String ymlKey = "unauthorized";
+        String rAtr = (String) request.getAttribute("ymlKey");
+        if (StringUtil.hasText(rAtr)) {
+            ymlKey = rAtr;
+        }
+
+        ComResultDto resultDto = exceptionInfoConfig.getResultDto(ymlKey);
+        ComResponseDto<Void> result = new ComResponseDto<>();
+        result.getResult().setHttpStatusCode(statusCode);
+        result.getResult().setCode(resultDto.getCode());
+        result.getResult().setMessage(resultDto.getMessage());
+
+        response.setStatus(statusCode);
+        response.setContentType("application/json;charset=utf-8");
+        response.getWriter().print(objectMapper.writeValueAsString(result));
     }
 }
