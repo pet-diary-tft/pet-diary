@@ -15,4 +15,7 @@ dependencies {
 
 test {
     useJUnitPlatform()
+    systemProperty 'spring.profiles.active', System.getenv('SPRING_PROFILES_ACTIVE')
+    systemProperty 'user.timezone', 'UTC'
+    systemProperty 'jasypt.encryptor.password', System.getenv('JASYPT_ENCRYPTOR_PASSWORD')
 }
