@@ -40,3 +40,10 @@ spring:
         default-page-size: 20
         max-page-size: 100
         one-indexed-parameters: true
+
+auth:
+  jwt:
+    expiry-in-ms: 3600000
+    refresh-expiry-in-days: 30
+    type: Bearer
+    secret: ENC(ybNUuE0/DwL2sRonHAa610O6bUcJ7RL/TEmo+ejzRCb1uDmZiiHfey2byytCua9HP3fSp0dnpuJp5nLGI6aawQONJ6nywyptXEUVUxPOfbai7xQqT+Ld38tWVVhBLdsSDh6lN6pS1qwajP+fMC+7yNioknbEqKKkp063Xiaxoc2epBnvnsQfexMcpXcpWw5w)

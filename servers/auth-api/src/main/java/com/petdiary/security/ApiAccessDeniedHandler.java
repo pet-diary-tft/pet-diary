@@ -15,7 +15,7 @@ import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor
-public class MvcAccessDeniedHandler implements AccessDeniedHandler {
+public class ApiAccessDeniedHandler implements AccessDeniedHandler {
     private final ExceptionInfoConfig exceptionInfoConfig;
     private final ObjectMapper objectMapper;
 

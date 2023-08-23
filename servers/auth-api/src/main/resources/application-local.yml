@@ -35,3 +35,9 @@ logging:
     com.petdiary: debug
     org.hibernate.sql: debug
     org.hibernate.type.descriptor.sql: trace
+cors:
+  allowed-credentials: true
+  allowed-header: "*"
+  allowed-method: "*"
+  allowed-origins:
+    - http://localhost:3000

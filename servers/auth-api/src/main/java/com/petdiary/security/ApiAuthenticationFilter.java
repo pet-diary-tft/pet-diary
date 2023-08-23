@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 @RequiredArgsConstructor
-public class MvcAuthenticationFilter extends OncePerRequestFilter {
+public class ApiAuthenticationFilter extends OncePerRequestFilter {
     private final String[] permitArea;
 
     @Override

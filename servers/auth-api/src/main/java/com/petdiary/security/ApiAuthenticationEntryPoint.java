@@ -15,7 +15,7 @@ import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor
-public class MvcAuthenticationEntryPoint implements AuthenticationEntryPoint {
+public class ApiAuthenticationEntryPoint implements AuthenticationEntryPoint {
     private final ExceptionInfoConfig exceptionInfoConfig;
     private final ObjectMapper objectMapper;
 

@@ -16,9 +16,9 @@ pet-diary-membership:
 
 spring:
   jpa:
-    generate-ddl: true
+    generate-ddl: false
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     show-sql: true
     properties:
       hibernate:
@@ -35,3 +35,13 @@ logging:
     com.petdiary: debug
     org.hibernate.sql: debug
     org.hibernate.type.descriptor.sql: trace
+cors:
+  allowed-credentials: true
+  allowed-header: "*"
+  allowed-method: "*"
+  allowed-origins:
+    - http://localhost:3000
+
+auth:
+  jwt:
+    secret: 2bf0bacbc66ce8638bfbc35d5541e20df0acf33a0bf3c6ca75dc146b1dcfbbc636db30003674bca49b49026dfa37aad315d7ec314436c867841536a9ce18bcf3

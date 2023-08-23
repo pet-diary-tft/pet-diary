@@ -1,9 +1,9 @@
 package com.petdiary.config;
 
 import com.petdiary.properties.CorsProperties;
-import com.petdiary.security.MvcAccessDeniedHandler;
-import com.petdiary.security.MvcAuthenticationEntryPoint;
-import com.petdiary.security.MvcAuthenticationFilter;
+import com.petdiary.security.ApiAccessDeniedHandler;
+import com.petdiary.security.ApiAuthenticationEntryPoint;
+import com.petdiary.security.ApiAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -40,19 +40,16 @@ public class SecurityConfig {
     };
 
     private final CorsProperties corsProperties;
-    private final MvcAuthenticationEntryPoint mvcAuthenticationEntryPoint;
-    private final MvcAccessDeniedHandler mvcAccessDeniedHandler;
+    private final ApiAuthenticationEntryPoint apiAuthenticationEntryPoint;
+    private final ApiAccessDeniedHandler apiAccessDeniedHandler;
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
+
         configuration.addAllowedHeader(corsProperties.getAllowedHeader());
         configuration.addAllowedMethod(corsProperties.getAllowedMethod());
         configuration.setAllowCredentials(corsProperties.isAllowedCredentials());
-
-        if (corsProperties.getAllowedOrigin() != null) {
-            configuration.addAllowedOriginPattern(corsProperties.getAllowedOrigin());
-        }
 
         if (corsProperties.getAllowedOrigins() != null) {
             corsProperties.getAllowedOrigins().forEach(configuration::addAllowedOriginPattern);
@@ -81,8 +78,8 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exceptionHandling ->
                         exceptionHandling
-                                .accessDeniedHandler(mvcAccessDeniedHandler)
-                                .authenticationEntryPoint(mvcAuthenticationEntryPoint)
+                                .accessDeniedHandler(apiAccessDeniedHandler)
+                                .authenticationEntryPoint(apiAuthenticationEntryPoint)
                 )
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -92,7 +89,7 @@ public class SecurityConfig {
                                 .requestMatchers(PERMIT_AREA).permitAll()
                                 .anyRequest().authenticated()
                 )
-                .addFilterBefore(new MvcAuthenticationFilter(PERMIT_AREA), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new ApiAuthenticationFilter(PERMIT_AREA), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 }
