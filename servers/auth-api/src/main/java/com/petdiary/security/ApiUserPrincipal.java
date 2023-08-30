@@ -12,13 +12,13 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Getter
 @Builder
 public class ApiUserPrincipal implements UserDetails {
     private final Long idx;
     private final String email;
     private final String password;
     private final String name;
-    @Getter
     private final MemberStatusType status;
     private final Collection<? extends GrantedAuthority> authorities;
 

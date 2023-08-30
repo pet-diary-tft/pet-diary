@@ -4,6 +4,7 @@ import com.petdiary.properties.CorsProperties;
 import com.petdiary.security.ApiAccessDeniedHandler;
 import com.petdiary.security.ApiAuthenticationEntryPoint;
 import com.petdiary.security.ApiAuthenticationFilter;
+import com.petdiary.security.ApiUserDetailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -42,6 +43,7 @@ public class SecurityConfig {
     private final CorsProperties corsProperties;
     private final ApiAuthenticationEntryPoint apiAuthenticationEntryPoint;
     private final ApiAccessDeniedHandler apiAccessDeniedHandler;
+    private final ApiUserDetailService apiUserDetailService;
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -89,7 +91,7 @@ public class SecurityConfig {
                                 .requestMatchers(PERMIT_AREA).permitAll()
                                 .anyRequest().authenticated()
                 )
-                .addFilterBefore(new ApiAuthenticationFilter(PERMIT_AREA), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new ApiAuthenticationFilter(PERMIT_AREA, apiUserDetailService), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 }

@@ -11,5 +11,11 @@
 - spring boot 3.1.1
 - gradle 8.1.1
 - jpa(Java Persistent API)
+- 사용 예정 AWS 서비스
+    - SES
+    - SNS
+    - S3
+    - ECR
+    - ECS
 
 ### Frontend
