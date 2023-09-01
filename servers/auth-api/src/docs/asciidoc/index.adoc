@@ -9,7 +9,15 @@
 === /api/v1/status
 
 .HTTP 요청 예시
-include::{snippets}/status-hello/http-request.adoc[]
+include::{snippets}/status-doc/http-request.adoc[]
 
 .HTTP 응답 예시
-include::{snippets}/status-hello/http-response.adoc[]
+include::{snippets}/status-doc/http-response.adoc[]
+
+=== /api/v1/auth/login
+
+.HTTP 요청 예시
+include::{snippets}/auth-login-doc/http-request.adoc[]
+
+.HTTP 응답 예시
+include::{snippets}/auth-login-doc/http-response.adoc[]

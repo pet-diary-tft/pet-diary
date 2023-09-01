@@ -1,17 +1,14 @@
 package com.petdiary.ctrl;
 
 import com.petdiary.controller.AuthCtrl;
+import com.petdiary.ctrl.config.CtrlTestConfig;
 import com.petdiary.dto.res.AuthRes;
 import com.petdiary.service.AuthSvc;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
@@ -19,15 +16,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 
-@ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc(addFilters = false)
 @WebMvcTest(AuthCtrl.class)
-public class AuthCtrlTests {
-
-    @Autowired
-    private MockMvc mockMvc;
-
+public class AuthCtrlTests extends CtrlTestConfig {
     @MockBean
     private AuthSvc authSvc;
 
@@ -48,6 +41,7 @@ public class AuthCtrlTests {
                 .andExpect(jsonPath("$.result.code").value("2000000"))
                 .andExpect(jsonPath("$.body.accessToken").value("mockToken"))
                 .andExpect(jsonPath("$.body.refreshToken").value("mockRefreshToken"))
-                .andDo(print());
+                .andDo(print())
+                .andDo(document("auth-login-doc"));
     }
 }
