@@ -36,9 +36,12 @@ public class ApiUserDetailService implements UserDetailsService {
      */
     @Transactional(readOnly = true)
     public UserDetails getUserDetails(HttpServletRequest request) {
-// 1. 헤더에서 jwt 추출
+        // 1. 헤더에서 jwt 추출
         String jwt = HttpUtil.getAuthorizationHeaderValue(request, authJwtProperties.getType());
-        if (jwt == null) throw new UsernameNotFoundException("Admin auth jwt not found.");
+        if (jwt == null) {
+            request.setAttribute("ymlKey", "unauthorized");
+            throw new UsernameNotFoundException("Member jwt not found.");
+        }
 
         // 2. jwt 값 검증
         Jws<Claims> claimsJws;
@@ -51,16 +54,16 @@ public class ApiUserDetailService implements UserDetailsService {
             request.setAttribute("ymlKey", "expired_jwt");
             throw new UsernameNotFoundException("Expired jwt.");
         } catch (UnsupportedJwtException e) {
-            request.setAttribute("ymlKey", "unsupported_jwt");
+            request.setAttribute("ymlKey", "invalid_jwt");
             throw new UsernameNotFoundException("Unsupported jwt.");
         } catch (IllegalArgumentException e) {
-            request.setAttribute("ymlKey", "not_found_jwt");
+            request.setAttribute("ymlKey", "invalid_jwt");
             throw new UsernameNotFoundException("Not found jwt.");
         } catch (JwtException e) {
             request.setAttribute("ymlKey", "invalid_jwt");
             throw new UsernameNotFoundException("Invalid jwt.");
         } catch (Exception e) {
-            request.setAttribute("ymlKey", "unknown_jwt_error");
+            request.setAttribute("ymlKey", "invalid_jwt");
             throw new UsernameNotFoundException("Unknown jwt error.");
         }
 
@@ -91,8 +94,8 @@ public class ApiUserDetailService implements UserDetailsService {
         // 5. principal 검증
         if (userPrincipal == null) throw new UsernameNotFoundException("User not found.");
         if (!userPrincipal.isEnabled()) {
-            request.setAttribute("ymlKey", "invalid_token");
-            throw new UsernameNotFoundException(String.format("%s is disabled(status: %s) admin user.",
+            request.setAttribute("ymlKey", "invalid_jwt");
+            throw new UsernameNotFoundException(String.format("%s is disabled(status: %s) member.",
                     userPrincipal.getUsername(), userPrincipal.getStatus().name()));
         }
 
