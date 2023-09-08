@@ -5,6 +5,8 @@ import com.petdiary.core.utils.HashUtil;
 import com.petdiary.core.utils.StringUtil;
 import com.petdiary.domain.rdspetdiarymembershipdb.domain.Member;
 import com.petdiary.domain.rdspetdiarymembershipdb.domain.MemberRefreshToken;
+import com.petdiary.domain.rdspetdiarymembershipdb.enums.MemberRoleType;
+import com.petdiary.domain.rdspetdiarymembershipdb.enums.MemberStatusType;
 import com.petdiary.domain.rdspetdiarymembershipdb.repository.MemberRefreshTokenRepository;
 import com.petdiary.domain.rdspetdiarymembershipdb.repository.MemberRepository;
 import com.petdiary.dto.req.AuthReq;
@@ -18,12 +20,14 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -34,6 +38,7 @@ public class AuthSvc {
     private final MemberRefreshTokenRepository memberRefreshTokenRepository;
     private final AuthenticationManager authenticationManager;
     private final AuthJwtProperties authJwtProperties;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public AuthRes.LoginDto login(AuthReq.LoginDto reqDto, String userAgent, String clientIp) throws NoSuchAlgorithmException {
@@ -121,6 +126,25 @@ public class AuthSvc {
         // 6. resDto 반환
         return AuthRes.AccessTokenDto.builder()
                 .accessToken(jwt)
+                .build();
+    }
+
+    @Transactional
+    public AuthRes.SignupDto signup(AuthReq.SignupDto reqDto) {
+        Member member = Member.builder()
+                .email(reqDto.getEmail())
+                .password(passwordEncoder.encode(reqDto.getPassword()))
+                .name(reqDto.getName())
+                .createdDate(LocalDateTime.now())
+                .roles(Collections.singleton(MemberRoleType.USER))
+                .accessTokenExpiresAt(LocalDateTime.now())
+                .statusCode(MemberStatusType.VERIFIED)
+                .build();
+        memberRepository.save(member);
+
+        return AuthRes.SignupDto.builder()
+                .email(member.getEmail())
+                .name(member.getName())
                 .build();
     }
 }

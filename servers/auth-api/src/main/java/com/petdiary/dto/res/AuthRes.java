@@ -33,4 +33,10 @@ public class AuthRes {
     public static class AccessTokenDto {
         private String accessToken;
     }
+
+    @Getter @Builder
+    public static class SignupDto {
+        private String email;
+        private String name;
+    }
 }

@@ -5,15 +5,14 @@ import com.petdiary.domain.rdspetdiarymembershipdb.converters.MemberStatusConver
 import com.petdiary.domain.rdspetdiarymembershipdb.enums.MemberRoleType;
 import com.petdiary.domain.rdspetdiarymembershipdb.enums.MemberStatusType;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
 @Table(name = "member")
-@Getter @Setter
+@Getter @Setter  @Builder @NoArgsConstructor @AllArgsConstructor
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

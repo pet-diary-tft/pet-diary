@@ -15,4 +15,12 @@ public class AuthReq {
         private Long userIdx;
         private String refreshToken;
     }
+
+    @Getter @Setter
+    public static class SignupDto {
+        private String email;
+        private String name;
+        private String password;
+        private String passwordConfirm;
+    }
 }

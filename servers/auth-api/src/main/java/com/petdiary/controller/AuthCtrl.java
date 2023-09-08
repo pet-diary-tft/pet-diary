@@ -38,4 +38,9 @@ public class AuthCtrl {
     public ComResponseEntity<AuthRes.AccessTokenDto> accessToken(@Valid @RequestBody AuthReq.AccessTokenDto reqDto) {
         return new ComResponseEntity<>(new ComResponseDto<>(authSvc.issueAccessToken(reqDto)));
     }
+
+    @PostMapping("/signup")
+    public ComResponseEntity<AuthRes.SignupDto> signup(@Valid @RequestBody AuthReq.SignupDto reqDto) {
+        return new ComResponseEntity<>(new ComResponseDto<>(authSvc.signup(reqDto)));
+    }
 }
