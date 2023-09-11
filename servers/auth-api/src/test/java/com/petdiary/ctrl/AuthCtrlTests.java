@@ -1,5 +1,7 @@
 package com.petdiary.ctrl;
 
+import com.epages.restdocs.apispec.ResourceDocumentation;
+import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.petdiary.controller.AuthCtrl;
 import com.petdiary.ctrl.config.CtrlTestConfig;
 import com.petdiary.dto.res.AuthRes;
@@ -12,8 +14,7 @@ import org.springframework.http.MediaType;
 
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -41,7 +42,10 @@ public class AuthCtrlTests extends CtrlTestConfig {
                 .andExpect(jsonPath("$.result.code").value("2000000"))
                 .andExpect(jsonPath("$.body.accessToken").value("mockToken"))
                 .andExpect(jsonPath("$.body.refreshToken").value("mockRefreshToken"))
-                .andDo(print())
-                .andDo(document("auth-login-doc"));
+                .andDo(document("auth-login-doc", ResourceDocumentation.resource(
+                        ResourceSnippetParameters.builder()
+                                .description("로그인 API")
+                                .build()
+                )));
     }
 }
