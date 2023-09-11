@@ -1,0 +1,85 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "PetDiary API Docs",
+    "description" : "PetDiary API 설명",
+    "version" : "0.0.1-SNAPSHOT"
+  },
+  "servers" : [ {
+    "url" : "http://localhost:8080"
+  } ],
+  "tags" : [ ],
+  "paths" : {
+    "/api/v1/status" : {
+      "get" : {
+        "tags" : [ "api" ],
+        "summary" : "서버 상태 API",
+        "description" : "서버 상태 API",
+        "operationId" : "status-doc",
+        "responses" : {
+          "200" : {
+            "description" : "200",
+            "content" : {
+              "application/json;charset=UTF-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api-v1-status486549215"
+                },
+                "examples" : {
+                  "status-doc" : {
+                    "value" : "{\"result\":{\"httpStatusCode\":200,\"code\":\"2000000\",\"message\":\"정상 처리 되었습니다.\"},\"body\":null}"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/login" : {
+      "post" : {
+        "tags" : [ "api" ],
+        "summary" : "로그인 API",
+        "description" : "로그인 API",
+        "operationId" : "auth-login-doc",
+        "requestBody" : {
+          "content" : {
+            "application/json;charset=UTF-8" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/api-v1-status486549215"
+              },
+              "examples" : {
+                "auth-login-doc" : {
+                  "value" : "{\"email\":\"test@example.com\",\"password\":\"password\"}"
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "200",
+            "content" : {
+              "application/json;charset=UTF-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api-v1-status486549215"
+                },
+                "examples" : {
+                  "auth-login-doc" : {
+                    "value" : "{\"result\":{\"httpStatusCode\":200,\"code\":\"2000000\",\"message\":\"정상 처리 되었습니다.\"},\"body\":{\"idx\":1,\"accessToken\":\"mockToken\",\"refreshToken\":\"mockRefreshToken\"}}"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "api-v1-status486549215" : {
+        "type" : "object"
+      }
+    }
+  }
+}

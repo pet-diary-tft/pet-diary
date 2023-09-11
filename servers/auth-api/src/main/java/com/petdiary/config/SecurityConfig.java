@@ -36,6 +36,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private static final String[] PERMIT_AREA = new String[] {
+            "/static/**",
+            "/swagger-ui.html",
             "/api/v1/auth/**",
             "/api/v1/status/**"
     };

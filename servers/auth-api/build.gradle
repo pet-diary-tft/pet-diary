@@ -45,6 +45,8 @@ tasks.named('asciidoctor') {
 openapi3 {
     title = 'PetDiary API Docs'
     description = 'PetDiary API 설명'
-    version = '0.0.1'
+    version = '0.0.1-SNAPSHOT'
     format = 'json'
+    outputDirectory = 'src/main/resources/static/swagger-ui'
+    outputFileNamePrefix = 'openapi3'
 }

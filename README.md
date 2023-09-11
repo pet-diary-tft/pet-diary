@@ -17,5 +17,7 @@
     - S3
     - ECR
     - ECS
+- 참고
+    - [_OpenAPI Specification을 이용한 더욱 효과적인 API 문서화_](https://tech.kakaopay.com/post/openapi-documentation/)
 
 ### Frontend
