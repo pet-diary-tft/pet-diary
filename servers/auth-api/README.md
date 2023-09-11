@@ -11,3 +11,7 @@
   ```
   
 위 코드는 예제입니다. Djasypt.encryptor.password, JASYPT_ENCRYPTOR_PASSWORD 값으로 실제 키를 넣어줘야 합니다.
+
+### 문서 자동화
+- pet-diary > servers > auth-api > documentation > openapi3 실행
+- [_http://localhost:8081/swagger-ui.html_](http://localhost:8081/swagger-ui.html) 접속
