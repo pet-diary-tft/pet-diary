@@ -42,7 +42,19 @@ tasks.named('asciidoctor') {
     dependsOn test
 }
 
+static def getOpenAPI3Server() {
+    switch (System.getenv('SPRING_PROFILES_ACTIVE')) {
+        case "prod":
+            return "https://prod.example.com"
+        case "dev":
+            return "https://dev.example.com"
+        default:
+            return "http://localhost:8081"
+    }
+}
+
 openapi3 {
+    server = getOpenAPI3Server()
     title = 'PetDiary API Docs'
     description = 'PetDiary API 설명'
     version = '0.0.1-SNAPSHOT'
