@@ -5,11 +5,11 @@ window.onload = function() {
   window.ui = SwaggerUIBundle({
     urls: [
       {
-        url: "http://localhost:8081/static/swagger-ui/openapi3.json",
+        url: "http://localhost:8081/static/swagger-ui/openapi3.yaml",
         name: "Local"
       },
       {
-        url: "https://dev.example.com/static/swagger-ui/openapi3.json",
+        url: "https://dev.example.com/static/swagger-ui/openapi3.yaml",
         name: "Dev"
       }
     ],

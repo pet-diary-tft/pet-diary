@@ -39,6 +39,12 @@ public class AuthCtrl {
         return new ComResponseEntity<>(new ComResponseDto<>(authSvc.issueAccessToken(reqDto)));
     }
 
+    @GetMapping("/email-check")
+    public ComResponseEntity<Void> emailCheck(@RequestParam(value = "email") String email) {
+        authSvc.emailCheck(email);
+        return new ComResponseEntity<>(new ComResponseDto<>());
+    }
+
     @PostMapping("/signup")
     public ComResponseEntity<AuthRes.SignupDto> signup(@Valid @RequestBody AuthReq.SignupDto reqDto) {
         return new ComResponseEntity<>(new ComResponseDto<>(authSvc.signup(reqDto)));

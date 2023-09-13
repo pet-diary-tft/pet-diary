@@ -58,7 +58,15 @@ openapi3 {
     title = 'PetDiary API Docs'
     description = 'PetDiary API 설명'
     version = '0.0.1-SNAPSHOT'
-    format = 'json'
+    format = 'yaml'
     outputDirectory = 'src/main/resources/static/swagger-ui'
     outputFileNamePrefix = 'openapi3'
 }
+
+//tasks.named("swagger") {
+//    dependsOn 'openapi3'
+//    doFirst {
+//        def openapi3File = file("src/main/resources/static/swagger-ui/openapi3.json")
+//    }
+//
+//}

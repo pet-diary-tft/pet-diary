@@ -106,8 +106,8 @@ public class AuthSvc {
 
         // 3. 리프레쉬 토큰 검증
         MemberRefreshToken rt = memberRefreshTokenRepository.findByMemberIdxAndRefreshToken(memberIdx, reqDto.getRefreshToken());
-        if (rt == null) throw new RestException("invalid_token");
-        if (rt.getExpiryDate().isBefore(LocalDateTime.now())) throw new RestException("expired_token");
+        if (rt == null) throw new RestException("invalid_refresh_token");
+        if (rt.getExpiryDate().isBefore(LocalDateTime.now())) throw new RestException("expired_refresh_token");
 
         // 4. jwt 생성
         Date iat = new Date();
@@ -127,6 +127,18 @@ public class AuthSvc {
         return AuthRes.AccessTokenDto.builder()
                 .accessToken(jwt)
                 .build();
+    }
+
+    @Transactional
+    public void emailCheck(String email) {
+        if (email.trim().isEmpty()) {
+            throw new RestException("invalid");
+        }
+
+        Member member = memberRepository.findMemberByEmail(email).orElse(null);
+        if (member != null) {
+            throw new RestException("already_exists");
+        }
     }
 
     @Transactional

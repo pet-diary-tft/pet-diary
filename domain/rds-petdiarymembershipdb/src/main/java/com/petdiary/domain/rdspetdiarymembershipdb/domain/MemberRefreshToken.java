@@ -2,7 +2,9 @@ package com.petdiary.domain.rdspetdiarymembershipdb.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
 
+import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -12,6 +14,8 @@ import java.util.UUID;
 public class MemberRefreshToken {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @JdbcTypeCode(Types.VARCHAR)
+    @Column(name = "token_id")
     private UUID tokenId;
 
     @Column(name = "member_idx")

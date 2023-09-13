@@ -37,4 +37,4 @@ out/
 .vscode/
 
 ### Swagger OpenAPI 3 Generated Files ###
-/servers/auth-api/src/main/resources/static/swagger-ui/openapi3.json
+/servers/auth-api/src/main/resources/static/swagger-ui/openapi3.yaml

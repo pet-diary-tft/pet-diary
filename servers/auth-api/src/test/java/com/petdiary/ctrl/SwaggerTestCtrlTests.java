@@ -40,6 +40,7 @@ public class SwaggerTestCtrlTests extends CtrlTestConfig {
                 .andDo(document("swagger-test-doc",
                         ResourceDocumentation.resource(
                             ResourceSnippetParameters.builder()
+                                    .tag("SwaggerTestCtrl")
                                     .description("Swagger 테스트용 API")
                                     .queryParameters(
                                             parameterWithName("byteTest1")

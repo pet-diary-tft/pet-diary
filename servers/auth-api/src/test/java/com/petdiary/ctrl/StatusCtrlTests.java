@@ -25,9 +25,9 @@ public class StatusCtrlTests extends CtrlTestConfig {
                 .andExpect(jsonPath("$.result.code").value("2000000")) // code 값 검증
                 .andExpect(jsonPath("$.result.message").value("정상 처리 되었습니다.")) // message 값 검증
                 .andExpect(jsonPath("$.body").isEmpty()) // body가 null임을 검증
-                .andDo(print())  // 결과를 콘솔에 출력
                 .andDo(document("status-doc", ResourceDocumentation.resource(
                         ResourceSnippetParameters.builder()
+                                .tag("StatusCtrl")
                                 .description("서버 상태 API")
                                 .build()
                 )));  // spring-restdocs를 사용하여 문서 생성

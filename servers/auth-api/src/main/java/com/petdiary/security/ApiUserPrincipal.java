@@ -39,6 +39,7 @@ public class ApiUserPrincipal implements UserDetails {
                 .name(member.getName())
                 .password(member.getPassword())
                 .authorities(authorities)
+                .status(member.getStatusCode())
                 .build();
     }
 
