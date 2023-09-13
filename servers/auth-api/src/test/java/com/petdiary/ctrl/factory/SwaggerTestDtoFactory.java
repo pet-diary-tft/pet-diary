@@ -1,8 +1,10 @@
 package com.petdiary.ctrl.factory;
 
 import com.petdiary.dto.req.SwaggerTestReq;
+import com.petdiary.dto.res.SwaggerTestRes;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class SwaggerTestDtoFactory {
     private static final byte BYTE_TEST_1 = 1;
@@ -24,5 +26,21 @@ public class SwaggerTestDtoFactory {
         reqDto.getTest2DtoList().add(subReqDto);
 
         return reqDto;
+    }
+
+    public static SwaggerTestRes.Test1Dto createTest1ResDto() {
+        List<SwaggerTestRes.Test2Dto> test2DtoList = new ArrayList<>();
+        for (int i = 1; i < 6; i++) {
+            test2DtoList.add(SwaggerTestRes.Test2Dto.builder()
+                    .subStringTest(SUB_STRING_TEST + "_" + i)
+                    .subLongTest(SUB_LONG_TEST + i)
+                    .build());
+        }
+        return SwaggerTestRes.Test1Dto.builder()
+                .byteTest(BYTE_TEST_1)
+                .stringTest(STRING_TEST_2)
+                .longTest(LONG_TEST_3)
+                .test2DtoList(test2DtoList)
+                .build();
     }
 }

@@ -7,10 +7,14 @@ import com.petdiary.controller.SwaggerTestCtrl;
 import com.petdiary.ctrl.config.CtrlTestConfig;
 import com.petdiary.ctrl.factory.SwaggerTestDtoFactory;
 import com.petdiary.dto.req.SwaggerTestReq;
+import com.petdiary.dto.res.SwaggerTestRes;
+import com.petdiary.service.SwaggerTestSvc;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
+import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -18,9 +22,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(SwaggerTestCtrl.class)
 public class SwaggerTestCtrlTests extends CtrlTestConfig {
+    @MockBean
+    private SwaggerTestSvc swaggerTestSvc;
+
     @Test
     public void testSwagger() throws Exception {
         SwaggerTestReq.Test1Dto reqDto = SwaggerTestDtoFactory.createTest1ReqDto();
+
+        SwaggerTestRes.Test1Dto mockResDto = SwaggerTestDtoFactory.createTest1ResDto();
+
+        when(swaggerTestSvc.test1(any())).thenReturn(mockResDto);
 
         mockMvc.perform(get("/api/v1/swagger-test")
                         .queryParam("byteTest1", reqDto.getByteTest1().toString())
