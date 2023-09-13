@@ -63,10 +63,18 @@ openapi3 {
     outputFileNamePrefix = 'openapi3'
 }
 
-//tasks.named("swagger") {
-//    dependsOn 'openapi3'
-//    doFirst {
-//        def openapi3File = file("src/main/resources/static/swagger-ui/openapi3.json")
-//    }
-//
-//}
+tasks.register('swagger') {
+    group = 'documentation'
+    dependsOn 'openapi3'
+    doFirst {
+        def openapi3File = file("src/main/resources/static/swagger-ui/openapi3.yaml")
+        def securitySchemesContent =  "  securitySchemes:\n" +  \
+                                      "    bearerAuth:\n" +  \
+                                      "      type: http\n" +  \
+                                      "      scheme: bearer\n" +  \
+                                      "      bearerFormat: JWT\n" +  \
+                                      "security:\n" + \
+                                      "  - bearerAuth: []"
+        openapi3File.append securitySchemesContent
+    }
+}

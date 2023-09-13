@@ -39,8 +39,7 @@ public class SecurityConfig {
             "/static/**",
             "/swagger-ui.html",
             "/api/v1/auth/**",
-            "/api/v1/status/**",
-            "/api/v1/swagger-test/**"
+            "/api/v1/status/**"
     };
 
     private final CorsProperties corsProperties;
