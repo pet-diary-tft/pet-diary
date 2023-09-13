@@ -1,5 +1,6 @@
 package com.petdiary.ctrl.config;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,5 +36,9 @@ public abstract class CtrlTestConfig {
                 .addFilters(new CharacterEncodingFilter("UTF-8", true))
                 .alwaysDo(print())
                 .build();
+    }
+
+    protected String getJsonContent(Object object) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(object);
     }
 }

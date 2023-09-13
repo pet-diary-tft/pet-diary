@@ -4,6 +4,7 @@ import com.epages.restdocs.apispec.ResourceDocumentation;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.petdiary.controller.AuthCtrl;
 import com.petdiary.ctrl.config.CtrlTestConfig;
+import com.petdiary.ctrl.factory.AuthDtoFactory;
 import com.petdiary.dto.req.AuthReq;
 import com.petdiary.dto.res.AuthRes;
 import com.petdiary.service.AuthSvc;
@@ -29,21 +30,20 @@ public class AuthCtrlTests extends CtrlTestConfig {
 
     @Test
     public void testLogin() throws Exception {
-        AuthRes.LoginDto mockLoginDto = AuthRes.LoginDto.builder()
-                .idx(1L)
-                .accessToken("mockToken")
-                .refreshToken("mockRefreshToken")
-                .build();
+        AuthReq.LoginDto reqDto = AuthDtoFactory.createLoginReqDto();
+        String jsonContent = getJsonContent(reqDto);
+
+        AuthRes.LoginDto mockLoginDto = AuthDtoFactory.createLoginResDto();
 
         when(authSvc.login(any(), any(), any())).thenReturn(mockLoginDto);
 
         mockMvc.perform(post("/api/v1/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"email\":\"test@example.com\",\"password\":\"password\"}"))
+                        .content(jsonContent))
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(jsonPath("$.result.code").value("2000000"))
-                .andExpect(jsonPath("$.body.accessToken").value("mockToken"))
-                .andExpect(jsonPath("$.body.refreshToken").value("mockRefreshToken"))
+                .andExpect(jsonPath("$.body.accessToken").value(mockLoginDto.getAccessToken()))
+                .andExpect(jsonPath("$.body.refreshToken").value(mockLoginDto.getRefreshToken()))
                 .andDo(document("auth-login-doc", ResourceDocumentation.resource(
                         ResourceSnippetParameters.builder()
                                 .tag("AuthCtrl")
@@ -54,14 +54,10 @@ public class AuthCtrlTests extends CtrlTestConfig {
 
     @Test
     public void testAccessToken() throws Exception {
-        AuthReq.AccessTokenDto reqDto = new AuthReq.AccessTokenDto();
-        reqDto.setUserIdx(1L);
-        reqDto.setRefreshToken("mockRefreshToken");
-        String jsonContent = objectMapper.writeValueAsString(reqDto);
+        AuthReq.AccessTokenDto reqDto = AuthDtoFactory.createAccessTokenReqDto();
+        String jsonContent = getJsonContent(reqDto);
 
-        AuthRes.AccessTokenDto mockResDto = AuthRes.AccessTokenDto.builder()
-                .accessToken("mockToken")
-                .build();
+        AuthRes.AccessTokenDto mockResDto = AuthDtoFactory.createAccessTokenResDto();
 
         when(authSvc.issueAccessToken(any())).thenReturn(mockResDto);
 
@@ -70,7 +66,7 @@ public class AuthCtrlTests extends CtrlTestConfig {
                         .content(jsonContent))
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(jsonPath("$.result.code").value("2000000"))
-                .andExpect(jsonPath("$.body.accessToken").value("mockToken"))
+                .andExpect(jsonPath("$.body.accessToken").value(mockResDto.getAccessToken()))
                 .andDo(document("auth-access-token-doc", ResourceDocumentation.resource(
                         ResourceSnippetParameters.builder()
                                 .tag("AuthCtrl")
@@ -81,7 +77,7 @@ public class AuthCtrlTests extends CtrlTestConfig {
 
     @Test
     public void testEmailCheck() throws Exception {
-        String email = "test@example.com";
+        String email = AuthDtoFactory.getTestEmail();
 
         doNothing().when(authSvc).emailCheck(email);
 
@@ -104,17 +100,10 @@ public class AuthCtrlTests extends CtrlTestConfig {
 
     @Test
     public void testSignup() throws Exception {
-        AuthReq.SignupDto reqDto = new AuthReq.SignupDto();
-        reqDto.setEmail("test@example.com");
-        reqDto.setName("테스트 계정");
-        reqDto.setPassword("1q2w3e4r5t@#");
-        reqDto.setPasswordConfirm("1q2w3e4r5t@#");
-        String jsonContent = objectMapper.writeValueAsString(reqDto);
+        AuthReq.SignupDto reqDto = AuthDtoFactory.createSignupReqDto();
+        String jsonContent = getJsonContent(reqDto);
 
-        AuthRes.SignupDto mockSignupDto = AuthRes.SignupDto.builder()
-                .email("test@example.com")
-                .name("테스트 계정")
-                .build();
+        AuthRes.SignupDto mockSignupDto = AuthDtoFactory.createSignupResDto();
 
         when(authSvc.signup(any())).thenReturn(mockSignupDto);
 
@@ -123,8 +112,8 @@ public class AuthCtrlTests extends CtrlTestConfig {
                         .content(jsonContent))
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(jsonPath("$.result.code").value("2000000"))
-                .andExpect(jsonPath("$.body.email").value("test@example.com"))
-                .andExpect(jsonPath("$.body.name").value("테스트 계정"))
+                .andExpect(jsonPath("$.body.email").value(mockSignupDto.getEmail()))
+                .andExpect(jsonPath("$.body.name").value(mockSignupDto.getName()))
                 .andDo(document("auth-signup-doc", ResourceDocumentation.resource(
                         ResourceSnippetParameters.builder()
                                 .tag("AuthCtrl")

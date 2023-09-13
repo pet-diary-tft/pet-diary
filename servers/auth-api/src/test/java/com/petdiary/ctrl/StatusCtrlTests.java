@@ -6,11 +6,9 @@ import com.petdiary.controller.StatusCtrl;
 import com.petdiary.ctrl.config.CtrlTestConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.test.web.servlet.ResultActions;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -18,9 +16,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class StatusCtrlTests extends CtrlTestConfig {
     @Test
     public void testHello() throws Exception {
-        // 요청 실행
-        ResultActions result = mockMvc.perform(get("/api/v1/status"))
-                .andExpect(status().isOk())
+        mockMvc.perform(get("/api/v1/status"))
+                .andExpect(status().is2xxSuccessful())
                 .andExpect(jsonPath("$.result.httpStatusCode").value(200)) // httpStatusCode 값 검증
                 .andExpect(jsonPath("$.result.code").value("2000000")) // code 값 검증
                 .andExpect(jsonPath("$.result.message").value("정상 처리 되었습니다.")) // message 값 검증

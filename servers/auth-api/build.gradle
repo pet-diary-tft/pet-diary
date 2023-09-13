@@ -56,24 +56,26 @@ static def getOpenAPI3Server() {
 openapi3 {
     server = getOpenAPI3Server()
     title = 'PetDiary API Docs'
-    description = 'PetDiary API 설명'
+    description = 'PetDiary API 명세서입니다.<br/>' +
+            'AuthCtrl에서 로그인 API를 호출해서 받은 accessToken을 Authorize 버튼을 누른 뒤 넣어주시면 로그인 됩니다.'
     version = '0.0.1-SNAPSHOT'
     format = 'yaml'
     outputDirectory = 'src/main/resources/static/swagger-ui'
     outputFileNamePrefix = 'openapi3'
 }
 
+// 모든 API 호출 시 Authorize 헤더를 넣기 위한 추가 설정
 tasks.register('swagger') {
     group = 'documentation'
     dependsOn 'openapi3'
     doFirst {
         def openapi3File = file("src/main/resources/static/swagger-ui/openapi3.yaml")
-        def securitySchemesContent =  "  securitySchemes:\n" +  \
-                                      "    bearerAuth:\n" +  \
-                                      "      type: http\n" +  \
-                                      "      scheme: bearer\n" +  \
-                                      "      bearerFormat: JWT\n" +  \
-                                      "security:\n" + \
+        def securitySchemesContent =  "  securitySchemes:\n" +
+                                      "    bearerAuth:\n" +
+                                      "      type: http\n" +
+                                      "      scheme: bearer\n" +
+                                      "      bearerFormat: JWT\n" +
+                                      "security:\n" +
                                       "  - bearerAuth: []"
         openapi3File.append securitySchemesContent
     }
