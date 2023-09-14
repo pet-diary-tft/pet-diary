@@ -13,6 +13,8 @@ import com.petdiary.domain.rdspetdiarymembershipdb.repository.MemberRefreshToken
 import com.petdiary.domain.rdspetdiarymembershipdb.repository.MemberRepository;
 import com.petdiary.dto.req.AuthReq;
 import com.petdiary.dto.res.AuthRes;
+import com.petdiary.exception.ApiResponseCode;
+import com.petdiary.exception.ApiRestException;
 import com.petdiary.properties.AuthJwtProperties;
 import com.petdiary.security.ApiUserPrincipal;
 import io.jsonwebtoken.Jwts;
@@ -147,12 +149,12 @@ public class AuthSvc {
     public AuthRes.SignupDto signup(AuthReq.SignupDto reqDto) {
         // 1. 비밀번호 확인 일치 검증
         if (!reqDto.getPassword().equals(reqDto.getPasswordConfirm())) {
-            throw new RestException(ResponseCode.PASSWORD_CONFIRM);
+            throw new ApiRestException(ApiResponseCode.PASSWORD_CONFIRM);
         }
 
         // 2. 이미 존재하는 이메일이 있는지 검증
         if (memberRepository.existsMemberByEmail(reqDto.getEmail())) {
-            throw new RestException(ResponseCode.ALREADY_EXISTS_EMAIL);
+            throw new ApiRestException(ApiResponseCode.ALREADY_EXISTS_EMAIL);
         }
 
         Member member = Member.builder()

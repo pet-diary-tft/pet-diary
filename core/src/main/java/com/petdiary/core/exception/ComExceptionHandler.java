@@ -27,25 +27,19 @@ public class ComExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public @ResponseBody ComResponseEntity<Map<String, Object>> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
         ComResultDto resultDto = new ComResultDto(ResponseCode.findByKey(exception.getClass().getName()));
-        int statusCode = resultDto.getStatus();
         ComResponseDto<Map<String, Object>> result = new ComResponseDto<>();
         result.setResult(resultDto);
 
-        // 1. @Valid에서 발생한 상세 오류 정보
+        // 1. body에 @Valid에서 발생한 상세 오류 정보 추가
         HashMap<String, Object> body = new HashMap<>();
         for (FieldError fieldError : exception.getBindingResult().getFieldErrors()) {
             body.put(fieldError.getField(), fieldError.getDefaultMessage());
         }
         result.setBody(body);
 
-        // 2. 500 에러는 error 레벨 Stack Trace 로깅
-        if (resultDto.getHttpStatusCode() == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
-            log.error("[Exception] [Stack Trace : {}]", ExceptionUtil.getStackTrace(exception));
-        } else {
-            log.debug("[Exception] [Stack Trace : {}]", ExceptionUtil.getStackTrace(exception));
-        }
-        log.error("[Exception Response Message : {}]", resultDto);
-        return new ComResponseEntity<>(result, HttpStatus.valueOf(statusCode));
+        ExceptionUtil.handlerCommonLogging(resultDto, exception);
+
+        return new ComResponseEntity<>(result, HttpStatus.valueOf(resultDto.getStatus()));
     }
 
     /**
@@ -58,13 +52,8 @@ public class ComExceptionHandler {
         ComResponseDto<Void> result = new ComResponseDto<>();
         result.setResult(resultDto);
 
-        // 1. 500 에러는 error 레벨 Stack Trace 로깅
-        if (resultDto.getHttpStatusCode() == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
-            log.error("[Exception] [Stack Trace : {}]", ExceptionUtil.getStackTrace(exception));
-        } else {
-            log.debug("[Exception] [Stack Trace : {}]", ExceptionUtil.getStackTrace(exception));
-        }
-        log.error("[Exception Response Message : {}]", resultDto);
+        ExceptionUtil.handlerCommonLogging(resultDto, exception);
+
         return new ComResponseEntity<>(result, HttpStatus.valueOf(resultDto.getStatus()));
     }
 
@@ -78,13 +67,8 @@ public class ComExceptionHandler {
         ComResponseDto<Void> result = new ComResponseDto<>();
         result.setResult(resultDto);
 
-        // 1. 500 에러는 error 레벨 Stack Trace 로깅
-        if (resultDto.getHttpStatusCode() == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
-            log.error("[Exception] [Stack Trace : {}]", ExceptionUtil.getStackTrace(exception));
-        } else {
-            log.debug("[Exception] [Stack Trace : {}]", ExceptionUtil.getStackTrace(exception));
-        }
-        log.error("[Exception Response Message : {}]", resultDto);
+        ExceptionUtil.handlerCommonLogging(resultDto, exception);
+
         return new ComResponseEntity<>(result, HttpStatus.valueOf(resultDto.getStatus()));
     }
 }

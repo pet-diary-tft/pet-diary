@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Getter
-public enum ResponseCode {
+public enum ResponseCode implements ResponseCodeInterface {
     // SYSTEM
     SYSTEM_001("com.fasterxml.jackson.core.io.JsonEOFException", 40000001, 400, "JSON 변환 중 문제가 있습니다."),
     SYSTEM_002("com.fasterxml.jackson.core.JsonParseException", 40000001, 400, "JSON 변환 중 문제가 있습니다."),
@@ -50,9 +50,6 @@ public enum ResponseCode {
     DISABLED_ACCOUNT("disabled_account", 40110026, 401, "사용 불가능한 계정입니다."),
     FORBIDDEN("forbidden", 40310001, 403, "이 페이지를 볼 수 있는 권한이 없습니다."),
     NOT_DEFINED("not_define", 50019999, 500, "정의되지않은 오류입니다."),
-    // TMP
-    PASSWORD_CONFIRM("password_confirm", 40011001, 400, "비밀번호 확인 값이 일치하지 않습니다."),
-    ALREADY_EXISTS_EMAIL("already_exists_email", 40011002, 400, "이미 존재하는 이메일 입니다."),
     ;
 
     // 키 등록
