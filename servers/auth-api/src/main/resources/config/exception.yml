@@ -45,12 +45,12 @@ exception:
     code: 40000011
     desc: 입력값 오류 입니다.
     status: 400
-  org.springframework.web.bind.MethodArgumentNotValidException:
+  java.lang.IllegalArgumentException:
     code: 40000011
     desc: 입력값 오류 입니다.
     status: 400
-  java.lang.IllegalArgumentException:
-    code: 40000011
+  org.springframework.web.bind.MethodArgumentNotValidException:
+    code: 40000012
     desc: 입력값 오류 입니다.
     status: 400
   org.springframework.data.mapping.PropertyReferenceException:
@@ -165,3 +165,12 @@ exception:
     code: 50019999
     desc: '정의되지않은 오류입니다 '
     status: 500
+# --- 여기까지가 공통 부분 ---
+  password_confirm:
+    code: 40011001
+    desc: '비밀번호 확인 값이 일치하지 않습니다.'
+    status: 400
+  already_exists_email:
+    code: 40011002
+    desc: '이미 존재하는 이메일 입니다.'
+    status: 400

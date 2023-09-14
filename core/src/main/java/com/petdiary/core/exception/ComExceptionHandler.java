@@ -7,10 +7,14 @@ import com.petdiary.core.utils.ExceptionUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @RestControllerAdvice
@@ -23,14 +27,22 @@ public class ComExceptionHandler {
      * @return : ComResponseEntity<Void>
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public @ResponseBody ComResponseEntity<Void> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) throws Exception {
+    public @ResponseBody ComResponseEntity<Map<String, Object>> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
         ComResultDto resultDto = exceptionInfoConfig.getResultDto(exception.getClass().getName());
         int statusCode = Integer.parseInt(resultDto.getStatus());
-        ComResponseDto<Void> result = new ComResponseDto<>();
+        ComResponseDto<Map<String, Object>> result = new ComResponseDto<>();
         result.getResult().setHttpStatusCode(statusCode);
         result.getResult().setCode(resultDto.getCode());
         result.getResult().setMessage(resultDto.getMessage());
-        // 1. 500 에러는 error 레벨 Stack Trace 로깅
+
+        // 1. @Valid에서 발생한 상세 오류 정보
+        HashMap<String, Object> body = new HashMap<>();
+        for (FieldError fieldError : exception.getBindingResult().getFieldErrors()) {
+            body.put(fieldError.getField(), fieldError.getDefaultMessage());
+        }
+        result.setBody(body);
+
+        // 2. 500 에러는 error 레벨 Stack Trace 로깅
         if (resultDto.getHttpStatusCode() == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
             log.error("[Exception] [Stack Trace : {}]", ExceptionUtil.getStackTrace(exception));
         } else {
@@ -45,7 +57,7 @@ public class ComExceptionHandler {
      * @return : ComResponseEntity<Void>
      */
     @ExceptionHandler(RestException.class)
-    public @ResponseBody ComResponseEntity<Void> handleBizException(RestException exception) throws Exception {
+    public @ResponseBody ComResponseEntity<Void> handleBizException(RestException exception) {
         ComResultDto resultDto;
         if (exception.getArrayReplace() != null) {
             resultDto = exceptionInfoConfig.getResultDto(exception.getYmlKey(), exception.getArrayReplace().toArray());
@@ -73,7 +85,7 @@ public class ComExceptionHandler {
      * @return : ComResponseEntity<Void>
      */
     @ExceptionHandler(Exception.class)
-    public @ResponseBody ComResponseEntity<Void> handleNoHandlerFoundException(Exception exception) throws Exception {
+    public @ResponseBody ComResponseEntity<Void> handleNoHandlerFoundException(Exception exception) {
         ComResultDto resultDto = exceptionInfoConfig.getResultDto(exception.getClass().getName());
         int statusCode = Integer.parseInt(resultDto.getStatus());
         ComResponseDto<Void> result = new ComResponseDto<>();

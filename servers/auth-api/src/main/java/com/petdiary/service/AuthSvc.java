@@ -4,6 +4,7 @@ import com.petdiary.core.exception.ComCode;
 import com.petdiary.core.exception.RestException;
 import com.petdiary.core.utils.HashUtil;
 import com.petdiary.core.utils.StringUtil;
+import com.petdiary.core.utils.ValidationUtil;
 import com.petdiary.domain.rdspetdiarymembershipdb.domain.Member;
 import com.petdiary.domain.rdspetdiarymembershipdb.domain.MemberRefreshToken;
 import com.petdiary.domain.rdspetdiarymembershipdb.enums.MemberRoleType;
@@ -12,6 +13,7 @@ import com.petdiary.domain.rdspetdiarymembershipdb.repository.MemberRefreshToken
 import com.petdiary.domain.rdspetdiarymembershipdb.repository.MemberRepository;
 import com.petdiary.dto.req.AuthReq;
 import com.petdiary.dto.res.AuthRes;
+import com.petdiary.exception.ApiCode;
 import com.petdiary.properties.AuthJwtProperties;
 import com.petdiary.security.ApiUserPrincipal;
 import io.jsonwebtoken.Jwts;
@@ -132,7 +134,7 @@ public class AuthSvc {
 
     @Transactional
     public void emailCheck(String email) {
-        if (email.trim().isEmpty()) {
+        if (!ValidationUtil.validEmailFormat(email)) {
             throw new RestException(ComCode.INVALID.getYamlCode());
         }
 
@@ -144,6 +146,16 @@ public class AuthSvc {
 
     @Transactional
     public AuthRes.SignupDto signup(AuthReq.SignupDto reqDto) {
+        // 1. 비밀번호 확인 일치 검증
+        if (!reqDto.getPassword().equals(reqDto.getPasswordConfirm())) {
+            throw new RestException(ApiCode.PASSWORD_CONFIRM.getYamlCode());
+        }
+
+        // 2. 이미 존재하는 이메일이 있는지 검증
+        if (memberRepository.existsMemberByEmail(reqDto.getEmail())) {
+            throw new RestException(ApiCode.ALREADY_EXISTS_EMAIL.getYamlCode());
+        }
+
         Member member = Member.builder()
                 .email(reqDto.getEmail())
                 .password(passwordEncoder.encode(reqDto.getPassword()))
