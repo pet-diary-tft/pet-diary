@@ -1,7 +1,11 @@
 package com.petdiary.domain.rdspetdiarymembershipdb.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum MemberRoleType {
-    USER("일반 회원");
+    USER("일반 회원"),
+    ;
 
     public static class Code {
         private static final String USER = "USER";
@@ -11,9 +15,5 @@ public enum MemberRoleType {
 
     MemberRoleType(String desc) {
         this.desc = desc;
-    }
-
-    public String getDesc() {
-        return desc;
     }
 }

@@ -1,7 +1,6 @@
 package com.petdiary.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.petdiary.core.exception.ExceptionInfoConfig;
 import com.petdiary.core.utils.HttpUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,11 +15,10 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 public class ApiAuthenticationEntryPoint implements AuthenticationEntryPoint {
-    private final ExceptionInfoConfig exceptionInfoConfig;
     private final ObjectMapper objectMapper;
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        HttpUtil.setAuthenticationEntryPointResponse(request, response, exceptionInfoConfig, objectMapper);
+        HttpUtil.setAuthenticationEntryPointResponse(request, response, objectMapper);
     }
 }

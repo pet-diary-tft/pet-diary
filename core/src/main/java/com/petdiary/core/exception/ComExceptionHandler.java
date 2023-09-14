@@ -20,20 +20,16 @@ import java.util.Map;
 @RestControllerAdvice
 @RequiredArgsConstructor
 public class ComExceptionHandler {
-    private final ExceptionInfoConfig exceptionInfoConfig;
-
     /**
      * &#064;Valid  어노테이션 관련 처리
-     * @return : ComResponseEntity<Void>
+     * @return : ComResponseEntity<Map<String, Object>>
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public @ResponseBody ComResponseEntity<Map<String, Object>> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
-        ComResultDto resultDto = exceptionInfoConfig.getResultDto(exception.getClass().getName());
-        int statusCode = Integer.parseInt(resultDto.getStatus());
+        ComResultDto resultDto = new ComResultDto(ResponseCode.findByKey(exception.getClass().getName()));
+        int statusCode = resultDto.getStatus();
         ComResponseDto<Map<String, Object>> result = new ComResponseDto<>();
-        result.getResult().setHttpStatusCode(statusCode);
-        result.getResult().setCode(resultDto.getCode());
-        result.getResult().setMessage(resultDto.getMessage());
+        result.setResult(resultDto);
 
         // 1. @Valid에서 발생한 상세 오류 정보
         HashMap<String, Object> body = new HashMap<>();
@@ -58,18 +54,10 @@ public class ComExceptionHandler {
      */
     @ExceptionHandler(RestException.class)
     public @ResponseBody ComResponseEntity<Void> handleBizException(RestException exception) {
-        ComResultDto resultDto;
-        if (exception.getArrayReplace() != null) {
-            resultDto = exceptionInfoConfig.getResultDto(exception.getYmlKey(), exception.getArrayReplace().toArray());
-        } else {
-            resultDto = exceptionInfoConfig.getResultDto(exception.getYmlKey());
-        }
-
-        int statusCode = Integer.parseInt(resultDto.getStatus());
+        ComResultDto resultDto = new ComResultDto(exception.getResponseCode());
         ComResponseDto<Void> result = new ComResponseDto<>();
-        result.getResult().setHttpStatusCode(statusCode);
-        result.getResult().setCode(resultDto.getCode());
-        result.getResult().setMessage(resultDto.getMessage());
+        result.setResult(resultDto);
+
         // 1. 500 에러는 error 레벨 Stack Trace 로깅
         if (resultDto.getHttpStatusCode() == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
             log.error("[Exception] [Stack Trace : {}]", ExceptionUtil.getStackTrace(exception));
@@ -77,7 +65,7 @@ public class ComExceptionHandler {
             log.debug("[Exception] [Stack Trace : {}]", ExceptionUtil.getStackTrace(exception));
         }
         log.error("[Exception Response Message : {}]", resultDto);
-        return new ComResponseEntity<>(result, HttpStatus.valueOf(statusCode));
+        return new ComResponseEntity<>(result, HttpStatus.valueOf(resultDto.getStatus()));
     }
 
     /**
@@ -86,12 +74,10 @@ public class ComExceptionHandler {
      */
     @ExceptionHandler(Exception.class)
     public @ResponseBody ComResponseEntity<Void> handleNoHandlerFoundException(Exception exception) {
-        ComResultDto resultDto = exceptionInfoConfig.getResultDto(exception.getClass().getName());
-        int statusCode = Integer.parseInt(resultDto.getStatus());
+        ComResultDto resultDto = new ComResultDto(ResponseCode.findByKey(exception.getClass().getName()));
         ComResponseDto<Void> result = new ComResponseDto<>();
-        result.getResult().setHttpStatusCode(statusCode);
-        result.getResult().setCode(resultDto.getCode());
-        result.getResult().setMessage(resultDto.getMessage());
+        result.setResult(resultDto);
+
         // 1. 500 에러는 error 레벨 Stack Trace 로깅
         if (resultDto.getHttpStatusCode() == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
             log.error("[Exception] [Stack Trace : {}]", ExceptionUtil.getStackTrace(exception));
@@ -99,6 +85,6 @@ public class ComExceptionHandler {
             log.debug("[Exception] [Stack Trace : {}]", ExceptionUtil.getStackTrace(exception));
         }
         log.error("[Exception Response Message : {}]", resultDto);
-        return new ComResponseEntity<>(result, HttpStatus.valueOf(statusCode));
+        return new ComResponseEntity<>(result, HttpStatus.valueOf(resultDto.getStatus()));
     }
 }

@@ -1,6 +1,6 @@
 package com.petdiary.service;
 
-import com.petdiary.core.exception.ComCode;
+import com.petdiary.core.exception.ResponseCode;
 import com.petdiary.core.exception.RestException;
 import com.petdiary.core.utils.HashUtil;
 import com.petdiary.core.utils.StringUtil;
@@ -13,7 +13,6 @@ import com.petdiary.domain.rdspetdiarymembershipdb.repository.MemberRefreshToken
 import com.petdiary.domain.rdspetdiarymembershipdb.repository.MemberRepository;
 import com.petdiary.dto.req.AuthReq;
 import com.petdiary.dto.res.AuthRes;
-import com.petdiary.exception.ApiCode;
 import com.petdiary.properties.AuthJwtProperties;
 import com.petdiary.security.ApiUserPrincipal;
 import io.jsonwebtoken.Jwts;
@@ -51,7 +50,7 @@ public class AuthSvc {
         ApiUserPrincipal principal = (ApiUserPrincipal) authentication.getPrincipal();
         Long memberIdx = principal.getIdx();
 
-        if (!principal.isEnabled()) throw new RestException(ComCode.DISABLED_ACCOUNT.getYamlCode());
+        if (!principal.isEnabled()) throw new RestException(ResponseCode.DISABLED_ACCOUNT);
 
         // 2. jwt 생성
         Date iat = new Date();
@@ -100,17 +99,17 @@ public class AuthSvc {
     @Transactional
     public AuthRes.AccessTokenDto issueAccessToken(AuthReq.AccessTokenDto reqDto) {
         // 1. 존재하는 회원인지 검증
-        Member member = memberRepository.findById(reqDto.getUserIdx()).orElseThrow(() -> new RestException(ComCode.NOT_EXISTS.getYamlCode()));
+        Member member = memberRepository.findById(reqDto.getUserIdx()).orElseThrow(() -> new RestException(ResponseCode.NOT_EXISTS));
         ApiUserPrincipal principal = ApiUserPrincipal.create(member);
         Long memberIdx = principal.getIdx();
 
         // 2. 사용 가능한 계정인지 검증
-        if (!principal.isEnabled()) throw new RestException(ComCode.DISABLED_ACCOUNT.getYamlCode());
+        if (!principal.isEnabled()) throw new RestException(ResponseCode.DISABLED_ACCOUNT);
 
         // 3. 리프레쉬 토큰 검증
         MemberRefreshToken rt = memberRefreshTokenRepository.findByMemberIdxAndRefreshToken(memberIdx, reqDto.getRefreshToken());
-        if (rt == null) throw new RestException(ComCode.INVALID_REFRESH_TOKEN.getYamlCode());
-        if (rt.getExpiryDate().isBefore(LocalDateTime.now())) throw new RestException(ComCode.EXPIRED_REFRESH_TOKEN.getYamlCode());
+        if (rt == null) throw new RestException(ResponseCode.INVALID_REFRESH_TOKEN);
+        if (rt.getExpiryDate().isBefore(LocalDateTime.now())) throw new RestException(ResponseCode.EXPIRED_REFRESH_TOKEN);
 
         // 4. jwt 생성
         Date iat = new Date();
@@ -135,12 +134,12 @@ public class AuthSvc {
     @Transactional
     public void emailCheck(String email) {
         if (!ValidationUtil.validEmailFormat(email)) {
-            throw new RestException(ComCode.INVALID.getYamlCode());
+            throw new RestException(ResponseCode.INVALID);
         }
 
         Member member = memberRepository.findMemberByEmail(email).orElse(null);
         if (member != null) {
-            throw new RestException(ComCode.ALREADY_EXISTS.getYamlCode());
+            throw new RestException(ResponseCode.ALREADY_EXISTS);
         }
     }
 
@@ -148,12 +147,12 @@ public class AuthSvc {
     public AuthRes.SignupDto signup(AuthReq.SignupDto reqDto) {
         // 1. 비밀번호 확인 일치 검증
         if (!reqDto.getPassword().equals(reqDto.getPasswordConfirm())) {
-            throw new RestException(ApiCode.PASSWORD_CONFIRM.getYamlCode());
+            throw new RestException(ResponseCode.PASSWORD_CONFIRM);
         }
 
         // 2. 이미 존재하는 이메일이 있는지 검증
         if (memberRepository.existsMemberByEmail(reqDto.getEmail())) {
-            throw new RestException(ApiCode.ALREADY_EXISTS_EMAIL.getYamlCode());
+            throw new RestException(ResponseCode.ALREADY_EXISTS_EMAIL);
         }
 
         Member member = Member.builder()

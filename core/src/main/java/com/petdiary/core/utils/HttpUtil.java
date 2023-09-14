@@ -3,7 +3,7 @@ package com.petdiary.core.utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.petdiary.core.dto.ComResponseDto;
 import com.petdiary.core.dto.ComResultDto;
-import com.petdiary.core.exception.ExceptionInfoConfig;
+import com.petdiary.core.exception.ResponseCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
@@ -97,7 +97,6 @@ public class HttpUtil {
     public static void setAccessDeniedHandlerResponse(
             HttpServletRequest request,
             HttpServletResponse response,
-            ExceptionInfoConfig exceptionInfoConfig,
             ObjectMapper objectMapper
     ) throws IOException {
         int statusCode = HttpStatus.FORBIDDEN.value();
@@ -108,11 +107,9 @@ public class HttpUtil {
             ymlKey = rAtr;
         }
 
-        ComResultDto resultDto = exceptionInfoConfig.getResultDto(ymlKey);
+        ComResultDto resultDto = new ComResultDto(ResponseCode.findByKey(ymlKey));
         ComResponseDto<Void> result = new ComResponseDto<>();
-        result.getResult().setHttpStatusCode(statusCode);
-        result.getResult().setCode(resultDto.getCode());
-        result.getResult().setMessage(resultDto.getMessage());
+        result.setResult(resultDto);
 
         response.setStatus(statusCode);
         response.setContentType("application/json;charset=utf-8");
@@ -125,7 +122,6 @@ public class HttpUtil {
     public static void setAuthenticationEntryPointResponse(
             HttpServletRequest request,
             HttpServletResponse response,
-            ExceptionInfoConfig exceptionInfoConfig,
             ObjectMapper objectMapper
     ) throws IOException {
         int statusCode = HttpStatus.UNAUTHORIZED.value();
@@ -136,11 +132,9 @@ public class HttpUtil {
             ymlKey = rAtr;
         }
 
-        ComResultDto resultDto = exceptionInfoConfig.getResultDto(ymlKey);
+        ComResultDto resultDto = new ComResultDto(ResponseCode.findByKey(ymlKey));
         ComResponseDto<Void> result = new ComResponseDto<>();
-        result.getResult().setHttpStatusCode(statusCode);
-        result.getResult().setCode(resultDto.getCode());
-        result.getResult().setMessage(resultDto.getMessage());
+        result.setResult(resultDto);
 
         response.setStatus(statusCode);
         response.setContentType("application/json;charset=utf-8");

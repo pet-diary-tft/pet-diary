@@ -1,6 +1,5 @@
 package com.petdiary.config;
 
-import com.petdiary.core.exception.ExceptionInfoConfig;
 import com.petdiary.interceptor.LoggingInterceptor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -12,11 +11,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
-    @Bean
-    public ExceptionInfoConfig getExceptionInfoConfig() {
-        return new ExceptionInfoConfig("/config/exception.yml");
-    }
-
     @Bean
     public LoggingInterceptor getLoggingInterceptor() {
         return new LoggingInterceptor();
