@@ -3,6 +3,7 @@ package com.petdiary.ctrl;
 import com.epages.restdocs.apispec.ResourceDocumentation;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.petdiary.controller.AuthCtrl;
+import com.petdiary.core.exception.ComCode;
 import com.petdiary.ctrl.config.CtrlTestConfig;
 import com.petdiary.ctrl.factory.AuthDtoFactory;
 import com.petdiary.dto.req.AuthReq;
@@ -41,7 +42,8 @@ public class AuthCtrlTests extends CtrlTestConfig {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonContent))
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("$.result.code").value("2000000"))
+                .andExpect(jsonPath("$.result.code").value(ComCode.SUCCESS.getCode()))
+                .andExpect(jsonPath("$.body.idx").value(mockLoginDto.getIdx()))
                 .andExpect(jsonPath("$.body.accessToken").value(mockLoginDto.getAccessToken()))
                 .andExpect(jsonPath("$.body.refreshToken").value(mockLoginDto.getRefreshToken()))
                 .andDo(document("auth-login-doc", ResourceDocumentation.resource(
@@ -65,7 +67,7 @@ public class AuthCtrlTests extends CtrlTestConfig {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonContent))
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("$.result.code").value("2000000"))
+                .andExpect(jsonPath("$.result.code").value(ComCode.SUCCESS.getCode()))
                 .andExpect(jsonPath("$.body.accessToken").value(mockResDto.getAccessToken()))
                 .andDo(document("auth-access-token-doc", ResourceDocumentation.resource(
                         ResourceSnippetParameters.builder()
@@ -84,7 +86,7 @@ public class AuthCtrlTests extends CtrlTestConfig {
         mockMvc.perform(get("/api/v1/auth/email-check")
                         .queryParam("email", email))
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("$.result.code").value("2000000"))
+                .andExpect(jsonPath("$.result.code").value(ComCode.SUCCESS.getCode()))
                 .andDo(document("auth-email-check-doc", ResourceDocumentation.resource(
                         ResourceSnippetParameters.builder()
                                 .tag("AuthCtrl")
@@ -111,7 +113,7 @@ public class AuthCtrlTests extends CtrlTestConfig {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonContent))
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("$.result.code").value("2000000"))
+                .andExpect(jsonPath("$.result.code").value(ComCode.SUCCESS.getCode()))
                 .andExpect(jsonPath("$.body.email").value(mockSignupDto.getEmail()))
                 .andExpect(jsonPath("$.body.name").value(mockSignupDto.getName()))
                 .andDo(document("auth-signup-doc", ResourceDocumentation.resource(

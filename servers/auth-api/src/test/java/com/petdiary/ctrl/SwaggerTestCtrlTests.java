@@ -4,6 +4,7 @@ import com.epages.restdocs.apispec.ResourceDocumentation;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.SimpleType;
 import com.petdiary.controller.SwaggerTestCtrl;
+import com.petdiary.core.exception.ComCode;
 import com.petdiary.ctrl.config.CtrlTestConfig;
 import com.petdiary.ctrl.factory.SwaggerTestDtoFactory;
 import com.petdiary.dto.req.SwaggerTestReq;
@@ -17,6 +18,7 @@ import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithNam
 import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -40,6 +42,8 @@ public class SwaggerTestCtrlTests extends CtrlTestConfig {
                         .queryParam("test2DtoList[0].subLongTest", reqDto.getTest2DtoList().get(0).getSubLongTest().toString())
                         .queryParam("test2DtoList[0].subStringTest", reqDto.getTest2DtoList().get(0).getSubStringTest()))
                 .andExpect(status().is2xxSuccessful())
+                .andExpect(jsonPath("$.result.httpStatusCode").value(ComCode.SUCCESS.getStatus())) // httpStatusCode 값 검증
+                .andExpect(jsonPath("$.result.code").value(ComCode.SUCCESS.getCode())) // code 값 검증
                 .andDo(document("swagger-test-doc",
                         ResourceDocumentation.resource(
                             ResourceSnippetParameters.builder()

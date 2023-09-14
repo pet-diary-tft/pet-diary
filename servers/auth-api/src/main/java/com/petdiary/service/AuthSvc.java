@@ -1,5 +1,6 @@
 package com.petdiary.service;
 
+import com.petdiary.core.exception.ComCode;
 import com.petdiary.core.exception.RestException;
 import com.petdiary.core.utils.HashUtil;
 import com.petdiary.core.utils.StringUtil;
@@ -48,7 +49,7 @@ public class AuthSvc {
         ApiUserPrincipal principal = (ApiUserPrincipal) authentication.getPrincipal();
         Long memberIdx = principal.getIdx();
 
-        if (!principal.isEnabled()) throw new RestException("disabled_account");
+        if (!principal.isEnabled()) throw new RestException(ComCode.DISABLED_ACCOUNT.getYamlCode());
 
         // 2. jwt 생성
         Date iat = new Date();
@@ -97,17 +98,17 @@ public class AuthSvc {
     @Transactional
     public AuthRes.AccessTokenDto issueAccessToken(AuthReq.AccessTokenDto reqDto) {
         // 1. 존재하는 회원인지 검증
-        Member member = memberRepository.findById(reqDto.getUserIdx()).orElseThrow(() -> new RestException("not_exists"));
+        Member member = memberRepository.findById(reqDto.getUserIdx()).orElseThrow(() -> new RestException(ComCode.NOT_EXISTS.getYamlCode()));
         ApiUserPrincipal principal = ApiUserPrincipal.create(member);
         Long memberIdx = principal.getIdx();
 
         // 2. 사용 가능한 계정인지 검증
-        if (!principal.isEnabled()) throw new RestException("disabled_account");
+        if (!principal.isEnabled()) throw new RestException(ComCode.DISABLED_ACCOUNT.getYamlCode());
 
         // 3. 리프레쉬 토큰 검증
         MemberRefreshToken rt = memberRefreshTokenRepository.findByMemberIdxAndRefreshToken(memberIdx, reqDto.getRefreshToken());
-        if (rt == null) throw new RestException("invalid_refresh_token");
-        if (rt.getExpiryDate().isBefore(LocalDateTime.now())) throw new RestException("expired_refresh_token");
+        if (rt == null) throw new RestException(ComCode.INVALID_REFRESH_TOKEN.getYamlCode());
+        if (rt.getExpiryDate().isBefore(LocalDateTime.now())) throw new RestException(ComCode.EXPIRED_REFRESH_TOKEN.getYamlCode());
 
         // 4. jwt 생성
         Date iat = new Date();
@@ -132,12 +133,12 @@ public class AuthSvc {
     @Transactional
     public void emailCheck(String email) {
         if (email.trim().isEmpty()) {
-            throw new RestException("invalid");
+            throw new RestException(ComCode.INVALID.getYamlCode());
         }
 
         Member member = memberRepository.findMemberByEmail(email).orElse(null);
         if (member != null) {
-            throw new RestException("already_exists");
+            throw new RestException(ComCode.ALREADY_EXISTS.getYamlCode());
         }
     }
 

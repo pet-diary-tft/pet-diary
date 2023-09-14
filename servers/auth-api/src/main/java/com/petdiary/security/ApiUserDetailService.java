@@ -1,5 +1,6 @@
 package com.petdiary.security;
 
+import com.petdiary.core.exception.ComCode;
 import com.petdiary.core.utils.DateUtil;
 import com.petdiary.core.utils.HttpUtil;
 import com.petdiary.domain.rdspetdiarymembershipdb.domain.Member;
@@ -39,7 +40,7 @@ public class ApiUserDetailService implements UserDetailsService {
         // 1. 헤더에서 jwt 추출
         String jwt = HttpUtil.getAuthorizationHeaderValue(request, authJwtProperties.getType());
         if (jwt == null) {
-            request.setAttribute("ymlKey", "unauthorized");
+            request.setAttribute("ymlKey", ComCode.UNAUTHORIZED.getYamlCode());
             throw new UsernameNotFoundException("Member jwt not found.");
         }
 
@@ -51,19 +52,19 @@ public class ApiUserDetailService implements UserDetailsService {
                     .build()
                     .parseClaimsJws(jwt);
         } catch (ExpiredJwtException e) {
-            request.setAttribute("ymlKey", "expired_jwt");
+            request.setAttribute("ymlKey", ComCode.EXPIRED_JWT.getYamlCode());
             throw new UsernameNotFoundException("Expired jwt.");
         } catch (UnsupportedJwtException e) {
-            request.setAttribute("ymlKey", "invalid_jwt");
+            request.setAttribute("ymlKey", ComCode.INVALID_JWT.getYamlCode());
             throw new UsernameNotFoundException("Unsupported jwt.");
         } catch (IllegalArgumentException e) {
-            request.setAttribute("ymlKey", "invalid_jwt");
+            request.setAttribute("ymlKey", ComCode.INVALID_JWT.getYamlCode());
             throw new UsernameNotFoundException("Not found jwt.");
         } catch (JwtException e) {
-            request.setAttribute("ymlKey", "invalid_jwt");
+            request.setAttribute("ymlKey", ComCode.INVALID_JWT.getYamlCode());
             throw new UsernameNotFoundException("Invalid jwt.");
         } catch (Exception e) {
-            request.setAttribute("ymlKey", "invalid_jwt");
+            request.setAttribute("ymlKey", ComCode.INVALID_JWT.getYamlCode());
             throw new UsernameNotFoundException("Unknown jwt error.");
         }
 
@@ -86,7 +87,7 @@ public class ApiUserDetailService implements UserDetailsService {
         if (accessTokenExpiresAt != null) {
             LocalDateTime jwtExpiration = DateUtil.convertToLocalDateTime(claimsJws.getBody().getExpiration());
             if (jwtExpiration.isBefore(accessTokenExpiresAt)) {
-                request.setAttribute("ymlKey", "expired_jwt");
+                request.setAttribute("ymlKey", ComCode.EXPIRED_JWT.getYamlCode());
                 throw new UsernameNotFoundException("Expired jwt.");
             }
         }
@@ -94,7 +95,7 @@ public class ApiUserDetailService implements UserDetailsService {
         // 5. principal 검증
         if (userPrincipal == null) throw new UsernameNotFoundException("User not found.");
         if (!userPrincipal.isEnabled()) {
-            request.setAttribute("ymlKey", "invalid_jwt");
+            request.setAttribute("ymlKey", ComCode.INVALID_JWT.getYamlCode());
             throw new UsernameNotFoundException(String.format("%s is disabled(status: %s) member.",
                     userPrincipal.getUsername(), userPrincipal.getStatus().name()));
         }

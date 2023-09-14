@@ -3,6 +3,7 @@ package com.petdiary.ctrl;
 import com.epages.restdocs.apispec.ResourceDocumentation;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.petdiary.controller.StatusCtrl;
+import com.petdiary.core.exception.ComCode;
 import com.petdiary.ctrl.config.CtrlTestConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -18,9 +19,9 @@ public class StatusCtrlTests extends CtrlTestConfig {
     public void testHello() throws Exception {
         mockMvc.perform(get("/api/v1/status"))
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("$.result.httpStatusCode").value(200)) // httpStatusCode 값 검증
-                .andExpect(jsonPath("$.result.code").value("2000000")) // code 값 검증
-                .andExpect(jsonPath("$.result.message").value("정상 처리 되었습니다.")) // message 값 검증
+                .andExpect(jsonPath("$.result.httpStatusCode").value(ComCode.SUCCESS.getStatus())) // httpStatusCode 값 검증
+                .andExpect(jsonPath("$.result.code").value(ComCode.SUCCESS.getCode())) // code 값 검증
+                .andExpect(jsonPath("$.result.message").value(ComCode.SUCCESS.getDesc())) // message 값 검증
                 .andExpect(jsonPath("$.body").isEmpty()) // body가 null임을 검증
                 .andDo(document("status-doc", ResourceDocumentation.resource(
                         ResourceSnippetParameters.builder()

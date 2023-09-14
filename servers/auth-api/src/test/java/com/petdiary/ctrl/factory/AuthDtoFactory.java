@@ -20,6 +20,7 @@ public class AuthDtoFactory {
 
     public static AuthRes.LoginDto createLoginResDto() {
         return AuthRes.LoginDto.builder()
+                .idx(USER_IDX)
                 .accessToken(ACCESS_TOKEN)
                 .refreshToken(REFRESH_TOKEN)
                 .build();
