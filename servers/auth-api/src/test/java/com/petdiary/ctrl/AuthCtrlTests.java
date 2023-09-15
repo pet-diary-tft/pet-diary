@@ -9,6 +9,8 @@ import com.petdiary.ctrl.config.CtrlTestConfig;
 import com.petdiary.ctrl.factory.AuthDtoFactory;
 import com.petdiary.dto.req.AuthReq;
 import com.petdiary.dto.res.AuthRes;
+import com.petdiary.exception.ApiResponseCode;
+import com.petdiary.exception.ApiRestException;
 import com.petdiary.service.AuthSvc;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -231,7 +233,53 @@ public class AuthCtrlTests extends CtrlTestConfig {
                 )));
     }
 
+    @Test
+    public void testEmailCheckInvalidEmailFormat() throws Exception {
+        String email = "invalid_email_format!";
 
+        doThrow(new RestException(ResponseCode.INVALID)).when(authSvc).emailCheck(email);
+
+        mockMvc.perform(get("/api/v1/auth/email-check")
+                        .queryParam("email", email))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.result.code").value(ResponseCode.INVALID.getCode()))
+                .andDo(document(getDocumentName(), ResourceDocumentation.resource(
+                        ResourceSnippetParameters.builder()
+                                .tag("AuthCtrl")
+                                .description("존재하는 이메일인지 확인")
+                                .queryParameters(
+                                        parameterWithName("email")
+                                                .defaultValue(email)
+                                                .description("확인할 이메일")
+                                )
+                                .responseFields(commonRes())
+                                .build()
+                )));
+    }
+
+    @Test
+    public void testEmailCheckAlreadyExists() throws Exception {
+        String email = AuthDtoFactory.getTestEmail();
+
+        doThrow(new RestException(ResponseCode.ALREADY_EXISTS)).when(authSvc).emailCheck(email);
+
+        mockMvc.perform(get("/api/v1/auth/email-check")
+                        .queryParam("email", email))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.result.code").value(ResponseCode.ALREADY_EXISTS.getCode()))
+                .andDo(document(getDocumentName(), ResourceDocumentation.resource(
+                        ResourceSnippetParameters.builder()
+                                .tag("AuthCtrl")
+                                .description("존재하는 이메일인지 확인")
+                                .queryParameters(
+                                        parameterWithName("email")
+                                                .defaultValue(email)
+                                                .description("확인할 이메일")
+                                )
+                                .responseFields(commonRes())
+                                .build()
+                )));
+    }
 
     @Test
     public void testSignup() throws Exception {
@@ -265,6 +313,53 @@ public class AuthCtrlTests extends CtrlTestConfig {
                                                 fieldWithPath("body.name").description("닉네임")
                                         )
                                 )
+                                .build()
+                )));
+    }
+
+    @Test
+    public void testSignupInvalidFields() throws Exception {
+        AuthReq.SignupDto reqDto = AuthDtoFactory.createSignupReqDto();
+        reqDto.setEmail("invalid_email");
+        reqDto.setPassword("invalid_password");
+        reqDto.setName("SooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooLooooooooooooooooooooooooooooooooooooooooooooooongName");
+        String jsonContent = getJsonContent(reqDto);
+
+        AuthRes.SignupDto mockSignupDto = AuthDtoFactory.createSignupResDto();
+
+        when(authSvc.signup(any())).thenReturn(mockSignupDto);
+
+        mockMvc.perform(post("/api/v1/auth/signup")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonContent))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.result.code").value(ResponseCode.findByKey("parameter.validation.error").getCode()))
+                .andDo(document(getDocumentName(), ResourceDocumentation.resource(
+                        ResourceSnippetParameters.builder()
+                                .tag("AuthCtrl")
+                                .description("회원가입")
+                                .build()
+                )));
+    }
+
+    @Test
+    public void testSignupInvalidPasswordConfirm() throws Exception {
+        AuthReq.SignupDto reqDto = AuthDtoFactory.createSignupReqDto();
+        reqDto.setPassword("1q2w3e4r5t@#");
+        reqDto.setPasswordConfirm("Invalid Password Confirm");
+        String jsonContent = getJsonContent(reqDto);
+
+        when(authSvc.signup(any())).thenThrow(new ApiRestException(ApiResponseCode.PASSWORD_CONFIRM));
+
+        mockMvc.perform(post("/api/v1/auth/signup")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonContent))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.result.code").value(ApiResponseCode.PASSWORD_CONFIRM.getCode()))
+                .andDo(document(getDocumentName(), ResourceDocumentation.resource(
+                        ResourceSnippetParameters.builder()
+                                .tag("AuthCtrl")
+                                .description("회원가입")
                                 .build()
                 )));
     }
