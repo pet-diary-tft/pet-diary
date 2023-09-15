@@ -35,11 +35,21 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 )
 @RequiredArgsConstructor
 public class SecurityConfig {
+    /**
+     * 로그인이 필요없으며 컨트롤러에 Principal 정보를 전달하지않음
+     */
     private static final String[] PERMIT_AREA = new String[] {
             "/static/**",
             "/swagger-ui.html",
             "/api/v1/auth/**",
             "/api/v1/status/**"
+    };
+
+    /**
+     * 로그인이 필요없지만 컨트롤러에 Principal 정보를 전달함
+     */
+    private static final String[] PERMIT_AREA_WITH_PRINCIPAL = new String[] {
+            "/api/v1/user/my"
     };
 
     private final CorsProperties corsProperties;
@@ -91,6 +101,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeHttpRequests ->
                         authorizeHttpRequests
                                 .requestMatchers(PERMIT_AREA).permitAll()
+                                .requestMatchers(PERMIT_AREA_WITH_PRINCIPAL).permitAll()
                                 .anyRequest().authenticated()
                 )
                 .addFilterBefore(new ApiAuthenticationFilter(PERMIT_AREA, apiUserDetailService), UsernamePasswordAuthenticationFilter.class);

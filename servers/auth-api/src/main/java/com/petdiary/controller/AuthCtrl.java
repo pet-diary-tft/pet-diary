@@ -5,12 +5,10 @@ import com.petdiary.core.dto.ComResponseEntity;
 import com.petdiary.core.utils.HttpUtil;
 import com.petdiary.dto.req.AuthReq;
 import com.petdiary.dto.res.AuthRes;
-import com.petdiary.security.ApiUserPrincipal;
 import com.petdiary.service.AuthSvc;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.NoSuchAlgorithmException;
@@ -20,12 +18,6 @@ import java.security.NoSuchAlgorithmException;
 @RequiredArgsConstructor
 public class AuthCtrl {
     private final AuthSvc authSvc;
-
-    @GetMapping("/my")
-    public ComResponseEntity<AuthRes.MyDto> myInfo(@AuthenticationPrincipal ApiUserPrincipal principal) {
-        AuthRes.MyDto result = new AuthRes.MyDto(principal);
-        return new ComResponseEntity<>(new ComResponseDto<>(result));
-    }
 
     @PostMapping("/login")
     public ComResponseEntity<AuthRes.LoginDto> login(HttpServletRequest request, @Valid @RequestBody AuthReq.LoginDto reqDto) throws NoSuchAlgorithmException {

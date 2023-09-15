@@ -67,7 +67,7 @@ openapi3 {
 // 모든 API 호출 시 Authorize 헤더를 넣기 위한 추가 설정
 tasks.register('swagger') {
     group = 'documentation'
-    dependsOn 'openapi3'
+    dependsOn 'clean', 'openapi3'
     doFirst {
         def openapi3File = file("src/main/resources/static/swagger-ui/openapi3.yaml")
         def securitySchemesContent =  "  securitySchemes:\n" +
