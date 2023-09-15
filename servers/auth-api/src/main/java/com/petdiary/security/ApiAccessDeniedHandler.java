@@ -1,6 +1,7 @@
 package com.petdiary.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.petdiary.core.exception.ResponseCode;
 import com.petdiary.core.utils.HttpUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,6 +20,6 @@ public class ApiAccessDeniedHandler implements AccessDeniedHandler {
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
-        HttpUtil.setAccessDeniedHandlerResponse(request, response, objectMapper);
+        HttpUtil.setSecurityMiddlewareResponse(request, response, objectMapper, ResponseCode.FORBIDDEN);
     }
 }

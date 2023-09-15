@@ -60,6 +60,11 @@ public enum ResponseCode implements ResponseCodeInterface {
         }
     }
 
+    /**
+     * 미들웨어 속성 키
+     */
+    public static final String MIDDLEWARE_KEY = "codeKey";
+
     private final String key;
     private final int code;
     private final int httpStatusCode;

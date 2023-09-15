@@ -6,7 +6,6 @@ import com.petdiary.core.dto.ComResultDto;
 import com.petdiary.core.exception.ResponseCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.http.HttpStatus;
 import org.springframework.lang.Nullable;
 
 import java.io.IOException;
@@ -92,51 +91,27 @@ public class HttpUtil {
     }
 
     /**
-     * HttpServletRequest에서 ymlKey 속성값을 읽어 원하는 에러메시지를 반환할 수 있습니다.
+     * HttpServletRequest에서 middlewareKey 속성값을 읽어 원하는 에러메시지를 반환할 수 있습니다.
+     * @param defaultResponseCode Attribute에 key 설정이 따로 없을 시 기본값으로 사용될 ResponseCode
      */
-    public static void setAccessDeniedHandlerResponse(
+    public static void setSecurityMiddlewareResponse(
             HttpServletRequest request,
             HttpServletResponse response,
-            ObjectMapper objectMapper
+            ObjectMapper objectMapper,
+            ResponseCode defaultResponseCode
     ) throws IOException {
-        int statusCode = HttpStatus.FORBIDDEN.value();
+        ResponseCode responseCode = defaultResponseCode;
 
-        String ymlKey = "forbidden";
-        String rAtr = (String) request.getAttribute("ymlKey");
-        if (StringUtil.hasText(rAtr)) {
-            ymlKey = rAtr;
+        String key = (String) request.getAttribute(ResponseCode.MIDDLEWARE_KEY);
+        if (StringUtil.hasText(key)) {
+            responseCode = ResponseCode.findByKey(key);
         }
 
-        ComResultDto resultDto = new ComResultDto(ResponseCode.findByKey(ymlKey));
+        ComResultDto resultDto = new ComResultDto(responseCode);
         ComResponseDto<Void> result = new ComResponseDto<>();
         result.setResult(resultDto);
 
-        response.setStatus(statusCode);
-        response.setContentType("application/json;charset=utf-8");
-        response.getWriter().print(objectMapper.writeValueAsString(result));
-    }
-
-    /**
-     * HttpServletRequest에서 ymlKey 속성값을 읽어 원하는 에러메시지를 반환할 수 있습니다.
-     */
-    public static void setAuthenticationEntryPointResponse(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            ObjectMapper objectMapper
-    ) throws IOException {
-        int statusCode = HttpStatus.UNAUTHORIZED.value();
-
-        String ymlKey = "unauthorized";
-        String rAtr = (String) request.getAttribute("ymlKey");
-        if (StringUtil.hasText(rAtr)) {
-            ymlKey = rAtr;
-        }
-
-        ComResultDto resultDto = new ComResultDto(ResponseCode.findByKey(ymlKey));
-        ComResponseDto<Void> result = new ComResponseDto<>();
-        result.setResult(resultDto);
-
-        response.setStatus(statusCode);
+        response.setStatus(responseCode.getHttpStatusCode());
         response.setContentType("application/json;charset=utf-8");
         response.getWriter().print(objectMapper.writeValueAsString(result));
     }
