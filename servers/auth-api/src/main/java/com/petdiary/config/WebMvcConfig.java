@@ -1,5 +1,6 @@
 package com.petdiary.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.petdiary.interceptor.LoggingInterceptor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +23,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
         messageSource.setBasenames("messages");
         messageSource.setDefaultEncoding("UTF-8");
         return messageSource;
+    }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper();
     }
 
     @Override
