@@ -19,6 +19,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -48,6 +49,17 @@ public class AuthCtrlTests extends CtrlTestConfig {
                         ResourceSnippetParameters.builder()
                                 .tag("AuthCtrl")
                                 .description("로그인")
+                                .requestFields(
+                                        fieldWithPath("email").description("이메일"),
+                                        fieldWithPath("password").description("비밀번호")
+                                )
+                                .responseFields(
+                                        commonResBodyFields(
+                                                fieldWithPath("body.idx").description("회원 고유번호"),
+                                                fieldWithPath("body.accessToken").description("엑세스 토큰"),
+                                                fieldWithPath("body.refreshToken").description("엑세스 토큰 재발급을 위한 refresh 토큰")
+                                        )
+                                )
                                 .build()
                 )));
     }
@@ -71,6 +83,15 @@ public class AuthCtrlTests extends CtrlTestConfig {
                         ResourceSnippetParameters.builder()
                                 .tag("AuthCtrl")
                                 .description("Access Token 발급")
+                                .requestFields(
+                                        fieldWithPath("userIdx").description("회원 고유번호"),
+                                        fieldWithPath("refreshToken").description("refresh 토큰 값")
+                                )
+                                .responseFields(
+                                        commonResBodyFields(
+                                                fieldWithPath("body.accessToken").description("엑세스 토큰")
+                                        )
+                                )
                                 .build()
                 )));
     }
@@ -94,6 +115,7 @@ public class AuthCtrlTests extends CtrlTestConfig {
                                                 .defaultValue(email)
                                                 .description("확인할 이메일")
                                 )
+                                .responseFields(commonRes())
                                 .build()
                 )));
     }
@@ -118,6 +140,18 @@ public class AuthCtrlTests extends CtrlTestConfig {
                         ResourceSnippetParameters.builder()
                                 .tag("AuthCtrl")
                                 .description("회원가입")
+                                .requestFields(
+                                        fieldWithPath("email").description("이메일"),
+                                        fieldWithPath("name").description("닉네임"),
+                                        fieldWithPath("password").description("비밀번호"),
+                                        fieldWithPath("passwordConfirm").description("비밀번호 확인")
+                                )
+                                .responseFields(
+                                        commonResBodyFields(
+                                                fieldWithPath("body.email").description("이메일"),
+                                                fieldWithPath("body.name").description("닉네임")
+                                        )
+                                )
                                 .build()
                 )));
     }

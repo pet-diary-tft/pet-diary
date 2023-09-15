@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -33,6 +34,14 @@ public class UserCtrlTests extends CtrlTestConfig {
                         ResourceSnippetParameters.builder()
                                 .tag("UserCtrl")
                                 .description("MY")
+                                .responseFields(
+                                        commonResBodyFields(
+                                                fieldWithPath("body.idx").description("회원 고유번호"),
+                                                fieldWithPath("body.email").description("이메일"),
+                                                fieldWithPath("body.name").description("닉네임"),
+                                                fieldWithPath("body.loggedIn").description("로그인 상태")
+                                        )
+                                )
                                 .build()
                 )));
     }
@@ -50,6 +59,14 @@ public class UserCtrlTests extends CtrlTestConfig {
                         ResourceSnippetParameters.builder()
                                 .tag("UserCtrl")
                                 .description("MY")
+                                .responseFields(
+                                        commonResBodyFields(
+                                                fieldWithPath("body.idx").description("회원 고유번호"),
+                                                fieldWithPath("body.email").description("이메일"),
+                                                fieldWithPath("body.name").description("닉네임"),
+                                                fieldWithPath("body.loggedIn").description("로그인 상태")
+                                        )
+                                )
                                 .build()
                 )));
     }

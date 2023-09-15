@@ -27,6 +27,7 @@ public class StatusCtrlTests extends CtrlTestConfig {
                         ResourceSnippetParameters.builder()
                                 .tag("StatusCtrl")
                                 .description("서버 상태 API")
+                                .responseFields(commonRes())
                                 .build()
                 )));  // spring-restdocs를 사용하여 문서 생성
     }

@@ -15,9 +15,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -71,7 +73,18 @@ public class SwaggerTestCtrlTests extends CtrlTestConfig {
                                                     .optional()
                                                     .description("리스트 객체 string 테스트")
                                     )
+                                    .responseFields(
+                                            commonResBodyFields(
+                                                    fieldWithPath("body.byteTest").description("바이트 타입 테스트"),
+                                                    fieldWithPath("body.stringTest").description("스트링 타입 테스트"),
+                                                    fieldWithPath("body.longTest").description("숫자 타입 테스트"),
+                                                    fieldWithPath("body.test2DtoList").description("객체 리스트 타입 테스트"),
+                                                    fieldWithPath("body.test2DtoList[0].subLongTest").description("리스트 내 객체의 숫자 타입 테스트"),
+                                                    fieldWithPath("body.test2DtoList[0].subStringTest").description("리스트 내 객체의 문자열 타입 테스트")
+                                            )
+                                    )
                                     .build()
-                )));
+                )))
+        ;
     }
 }
