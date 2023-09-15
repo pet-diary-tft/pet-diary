@@ -87,4 +87,32 @@ public abstract class CtrlTestConfig {
         return Stream.concat(commonFields.stream(), Stream.of(fieldDescriptors))
                 .collect(Collectors.toList());
     }
+
+    /**
+     * 클래스명과 메서드명을 참고해 자동으로 문서명을 작성해주는 유틸 함수
+     */
+    protected String getDocumentName() {
+        // 현재 실행 중인 메서드와 클래스의 정보를 가져옴
+        StackTraceElement currentElement = Thread.currentThread().getStackTrace()[2];
+        String className = currentElement.getClassName();
+        String methodName = currentElement.getMethodName();
+
+        // "CtrlTests", "CtrlTest", "Tests", "Test" 접미사 제거
+        className = className.substring(className.lastIndexOf('.') + 1).replaceAll("(CtrlTests?|Tests?)$", "");
+
+        // "test" 접두사 제거
+        methodName = methodName.replaceFirst("^test", "");
+
+        // CamelCase를 hyphen-case로 변환
+        String hyphenClassName = camelToHyphen(className);
+        String hyphenMethodName = camelToHyphen(methodName);
+
+        return hyphenClassName + "-" + hyphenMethodName + "-doc";
+    }
+
+    private static String camelToHyphen(String str) {
+        return str
+                .replaceAll("(.)(\\p{Upper})", "$1-$2")
+                .toLowerCase();
+    }
 }

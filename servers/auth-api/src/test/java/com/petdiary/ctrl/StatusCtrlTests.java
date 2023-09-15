@@ -23,7 +23,7 @@ public class StatusCtrlTests extends CtrlTestConfig {
                 .andExpect(jsonPath("$.result.code").value(ResponseCode.SUCCESS.getCode())) // code 값 검증
                 .andExpect(jsonPath("$.result.message").value(ResponseCode.SUCCESS.getMessage())) // message 값 검증
                 .andExpect(jsonPath("$.body").isEmpty()) // body가 null임을 검증
-                .andDo(document("status-doc", ResourceDocumentation.resource(
+                .andDo(document(getDocumentName(), ResourceDocumentation.resource(
                         ResourceSnippetParameters.builder()
                                 .tag("StatusCtrl")
                                 .description("서버 상태 API")

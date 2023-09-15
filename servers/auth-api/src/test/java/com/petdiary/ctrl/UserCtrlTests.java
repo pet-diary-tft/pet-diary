@@ -30,7 +30,7 @@ public class UserCtrlTests extends CtrlTestConfig {
                 .andExpect(jsonPath("$.body.email").value(TestConstants.TEST_USER_EMAIL))
                 .andExpect(jsonPath("$.body.name").value(TestConstants.TEST_USER_NAME))
                 .andExpect(jsonPath("$.body.loggedIn").value(true))
-                .andDo(document("user-logged-in-my-doc", ResourceDocumentation.resource(
+                .andDo(document(getDocumentName(), ResourceDocumentation.resource(
                         ResourceSnippetParameters.builder()
                                 .tag("UserCtrl")
                                 .description("MY")
@@ -55,7 +55,7 @@ public class UserCtrlTests extends CtrlTestConfig {
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(jsonPath("$.result.code").value(ResponseCode.SUCCESS.getCode()))
                 .andExpect(jsonPath("$.body.loggedIn").value(false))
-                .andDo(document("user-logged-out-my-doc", ResourceDocumentation.resource(
+                .andDo(document(getDocumentName(), ResourceDocumentation.resource(
                         ResourceSnippetParameters.builder()
                                 .tag("UserCtrl")
                                 .description("MY")

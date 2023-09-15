@@ -39,7 +39,7 @@ public class ComExceptionHandler {
 
         ExceptionUtil.handlerCommonLogging(resultDto, exception);
 
-        return new ComResponseEntity<>(result, HttpStatus.valueOf(resultDto.getStatus()));
+        return new ComResponseEntity<>(result, HttpStatus.valueOf(resultDto.getHttpStatusCode()));
     }
 
     /**
@@ -54,7 +54,7 @@ public class ComExceptionHandler {
 
         ExceptionUtil.handlerCommonLogging(resultDto, exception);
 
-        return new ComResponseEntity<>(result, HttpStatus.valueOf(resultDto.getStatus()));
+        return new ComResponseEntity<>(result, HttpStatus.valueOf(resultDto.getHttpStatusCode()));
     }
 
     /**
@@ -69,6 +69,6 @@ public class ComExceptionHandler {
 
         ExceptionUtil.handlerCommonLogging(resultDto, exception);
 
-        return new ComResponseEntity<>(result, HttpStatus.valueOf(resultDto.getStatus()));
+        return new ComResponseEntity<>(result, HttpStatus.valueOf(resultDto.getHttpStatusCode()));
     }
 }

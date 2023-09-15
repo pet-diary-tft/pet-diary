@@ -46,7 +46,7 @@ public class SwaggerTestCtrlTests extends CtrlTestConfig {
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(jsonPath("$.result.httpStatusCode").value(ResponseCode.SUCCESS.getHttpStatusCode())) // httpStatusCode 값 검증
                 .andExpect(jsonPath("$.result.code").value(ResponseCode.SUCCESS.getCode())) // code 값 검증
-                .andDo(document("swagger-test-doc",
+                .andDo(document(getDocumentName(),
                         ResourceDocumentation.resource(
                             ResourceSnippetParameters.builder()
                                     .tag("SwaggerTestCtrl")

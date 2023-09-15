@@ -26,13 +26,12 @@ public class ApiExceptionHandler {
         resultDto.setHttpStatusCode(arc.getHttpStatusCode());
         resultDto.setCode(arc.getCode());
         resultDto.setMessage(arc.getMessage());
-        resultDto.setStatus(arc.getHttpStatusCode());
 
         ComResponseDto<Void> result = new ComResponseDto<>();
         result.setResult(resultDto);
 
         ExceptionUtil.handlerCommonLogging(resultDto, exception);
 
-        return new ComResponseEntity<>(result, HttpStatus.valueOf(resultDto.getStatus()));
+        return new ComResponseEntity<>(result, HttpStatus.valueOf(resultDto.getHttpStatusCode()));
     }
 }

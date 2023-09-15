@@ -4,6 +4,7 @@ import com.epages.restdocs.apispec.ResourceDocumentation;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.petdiary.controller.AuthCtrl;
 import com.petdiary.core.exception.ResponseCode;
+import com.petdiary.core.exception.RestException;
 import com.petdiary.ctrl.config.CtrlTestConfig;
 import com.petdiary.ctrl.factory.AuthDtoFactory;
 import com.petdiary.dto.req.AuthReq;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.BadCredentialsException;
 
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static org.mockito.Mockito.*;
@@ -45,7 +47,7 @@ public class AuthCtrlTests extends CtrlTestConfig {
                 .andExpect(jsonPath("$.body.idx").value(mockLoginDto.getIdx()))
                 .andExpect(jsonPath("$.body.accessToken").value(mockLoginDto.getAccessToken()))
                 .andExpect(jsonPath("$.body.refreshToken").value(mockLoginDto.getRefreshToken()))
-                .andDo(document("auth-login-doc", ResourceDocumentation.resource(
+                .andDo(document(getDocumentName(), ResourceDocumentation.resource(
                         ResourceSnippetParameters.builder()
                                 .tag("AuthCtrl")
                                 .description("로그인")
@@ -65,6 +67,27 @@ public class AuthCtrlTests extends CtrlTestConfig {
     }
 
     @Test
+    public void testLoginFail() throws Exception {
+        AuthReq.LoginDto reqDto = AuthDtoFactory.createLoginReqDto();
+        String jsonContent = getJsonContent(reqDto);
+
+        when(authSvc.login(any(), any(), any())).thenThrow(BadCredentialsException.class);
+
+        mockMvc.perform(post("/api/v1/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonContent))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.result.code").value(ResponseCode.findByKey("org.springframework.security.authentication.BadCredentialsException").getCode()))
+                .andDo(document(getDocumentName(), ResourceDocumentation.resource(
+                        ResourceSnippetParameters.builder()
+                                .tag("AuthCtrl")
+                                .description("로그인")
+                                .responseFields(commonRes())
+                                .build()
+                )));
+    }
+
+    @Test
     public void testAccessToken() throws Exception {
         AuthReq.AccessTokenDto reqDto = AuthDtoFactory.createAccessTokenReqDto();
         String jsonContent = getJsonContent(reqDto);
@@ -79,7 +102,7 @@ public class AuthCtrlTests extends CtrlTestConfig {
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(jsonPath("$.result.code").value(ResponseCode.SUCCESS.getCode()))
                 .andExpect(jsonPath("$.body.accessToken").value(mockResDto.getAccessToken()))
-                .andDo(document("auth-access-token-doc", ResourceDocumentation.resource(
+                .andDo(document(getDocumentName(), ResourceDocumentation.resource(
                         ResourceSnippetParameters.builder()
                                 .tag("AuthCtrl")
                                 .description("Access Token 발급")
@@ -97,6 +120,94 @@ public class AuthCtrlTests extends CtrlTestConfig {
     }
 
     @Test
+    public void testAccessTokenDisabledMember() throws Exception {
+        AuthReq.AccessTokenDto reqDto = AuthDtoFactory.createAccessTokenReqDto();
+        String jsonContent = getJsonContent(reqDto);
+
+        when(authSvc.issueAccessToken(any())).thenThrow(new RestException(ResponseCode.DISABLED_ACCOUNT));
+
+        mockMvc.perform(post("/api/v1/auth/access-token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonContent))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.result.code").value(ResponseCode.DISABLED_ACCOUNT.getCode()))
+                .andDo(document(getDocumentName(), ResourceDocumentation.resource(
+                        ResourceSnippetParameters.builder()
+                                .tag("AuthCtrl")
+                                .description("Access Token 발급")
+                                .responseFields(commonRes())
+                                .build()
+                )));
+
+    }
+
+    @Test
+    public void testAccessTokenInvalidRefreshToken() throws Exception {
+        AuthReq.AccessTokenDto reqDto = AuthDtoFactory.createAccessTokenReqDto();
+        String jsonContent = getJsonContent(reqDto);
+
+        when(authSvc.issueAccessToken(any())).thenThrow(new RestException(ResponseCode.INVALID_REFRESH_TOKEN));
+
+        mockMvc.perform(post("/api/v1/auth/access-token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonContent))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.result.code").value(ResponseCode.INVALID_REFRESH_TOKEN.getCode()))
+                .andDo(document(getDocumentName(), ResourceDocumentation.resource(
+                        ResourceSnippetParameters.builder()
+                                .tag("AuthCtrl")
+                                .description("Access Token 발급")
+                                .responseFields(commonRes())
+                                .build()
+                )));
+
+    }
+
+    @Test
+    public void testAccessTokenExpiredRefreshToken() throws Exception {
+        AuthReq.AccessTokenDto reqDto = AuthDtoFactory.createAccessTokenReqDto();
+        String jsonContent = getJsonContent(reqDto);
+
+        when(authSvc.issueAccessToken(any())).thenThrow(new RestException(ResponseCode.EXPIRED_REFRESH_TOKEN));
+
+        mockMvc.perform(post("/api/v1/auth/access-token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonContent))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.result.code").value(ResponseCode.EXPIRED_REFRESH_TOKEN.getCode()))
+                .andDo(document(getDocumentName(), ResourceDocumentation.resource(
+                        ResourceSnippetParameters.builder()
+                                .tag("AuthCtrl")
+                                .description("Access Token 발급")
+                                .responseFields(commonRes())
+                                .build()
+                )));
+
+    }
+
+    @Test
+    public void testAccessTokenNotExistsMember() throws Exception {
+        AuthReq.AccessTokenDto reqDto = AuthDtoFactory.createAccessTokenReqDto();
+        String jsonContent = getJsonContent(reqDto);
+
+        when(authSvc.issueAccessToken(any())).thenThrow(new RestException(ResponseCode.NOT_EXISTS));
+
+        mockMvc.perform(post("/api/v1/auth/access-token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonContent))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.result.code").value(ResponseCode.NOT_EXISTS.getCode()))
+                .andDo(document(getDocumentName(), ResourceDocumentation.resource(
+                        ResourceSnippetParameters.builder()
+                                .tag("AuthCtrl")
+                                .description("Access Token 발급")
+                                .responseFields(commonRes())
+                                .build()
+                )));
+
+    }
+
+    @Test
     public void testEmailCheck() throws Exception {
         String email = AuthDtoFactory.getTestEmail();
 
@@ -106,7 +217,7 @@ public class AuthCtrlTests extends CtrlTestConfig {
                         .queryParam("email", email))
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(jsonPath("$.result.code").value(ResponseCode.SUCCESS.getCode()))
-                .andDo(document("auth-email-check-doc", ResourceDocumentation.resource(
+                .andDo(document(getDocumentName(), ResourceDocumentation.resource(
                         ResourceSnippetParameters.builder()
                                 .tag("AuthCtrl")
                                 .description("존재하는 이메일인지 확인")
@@ -119,6 +230,8 @@ public class AuthCtrlTests extends CtrlTestConfig {
                                 .build()
                 )));
     }
+
+
 
     @Test
     public void testSignup() throws Exception {
@@ -136,7 +249,7 @@ public class AuthCtrlTests extends CtrlTestConfig {
                 .andExpect(jsonPath("$.result.code").value(ResponseCode.SUCCESS.getCode()))
                 .andExpect(jsonPath("$.body.email").value(mockSignupDto.getEmail()))
                 .andExpect(jsonPath("$.body.name").value(mockSignupDto.getName()))
-                .andDo(document("auth-signup-doc", ResourceDocumentation.resource(
+                .andDo(document(getDocumentName(), ResourceDocumentation.resource(
                         ResourceSnippetParameters.builder()
                                 .tag("AuthCtrl")
                                 .description("회원가입")
