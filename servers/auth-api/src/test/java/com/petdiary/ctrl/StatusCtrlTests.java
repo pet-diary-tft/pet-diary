@@ -31,4 +31,9 @@ public class StatusCtrlTests extends CtrlTestConfig {
                                 .build()
                 )));  // spring-restdocs를 사용하여 문서 생성
     }
+
+    @Test
+    public void errorDocs() {
+
+    }
 }

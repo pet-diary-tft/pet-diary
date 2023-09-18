@@ -25,10 +25,19 @@ import javax.sql.DataSource;
         basePackages = {"com.petdiary.domain.rdspetdiarymembershipdb.repository"}
 )
 public class DataSourceConfig {
+    /* Master-Slave 구조
     @Primary
     @Bean("petDiaryMembershipDataSource")
     public DataSource petdiaryDataSource(@Qualifier("petDiaryMembershipRoutingDataSource") DataSource routingDataSource) {
         return new LazyConnectionDataSourceProxy(routingDataSource);
+    }
+    */
+
+    // Standalone 구조
+    @Primary
+    @Bean("petDiaryMembershipDataSource")
+    public DataSource petdiaryDataSource(@Qualifier("petDiaryMembershipMasterDataSource") DataSource masterDataSource) {
+        return masterDataSource;
     }
 
     @Primary

@@ -9,17 +9,17 @@ import java.util.Map;
 public enum ResponseCode implements ResponseCodeInterface {
     // SYSTEM
     SYSTEM_001("com.fasterxml.jackson.core.io.JsonEOFException", 40000001, 400, "JSON 변환 중 문제가 있습니다."),
-    SYSTEM_002("com.fasterxml.jackson.core.JsonParseException", 40000001, 400, "JSON 변환 중 문제가 있습니다."),
-    SYSTEM_003("com.fasterxml.jackson.databind.exc.MismatchedInputException", 40000001, 400, "JSON 변환 중 문제가 있습니다."),
-    SYSTEM_004("com.fasterxml.jackson.databind.JsonMappingException", 40000001, 400, "JSON 변환 중 문제가 있습니다."),
-    SYSTEM_005("com.fasterxml.jackson.databind.exc.InvalidDefinitionException", 40000001, 400, "JSON 변환 중 문제가 있습니다."),
-    SYSTEM_006("org.springframework.http.converter.HttpMessageConversionException", 40000001, 400, "JSON 변환 중 문제가 있습니다."),
-    SYSTEM_007("org.springframework.http.converter.HttpMessageNotReadableException", 40000001, 400, "JSON 변환 중 문제가 있습니다."),
+    SYSTEM_002("com.fasterxml.jackson.core.JsonParseException", 40000002, 400, "JSON 변환 중 문제가 있습니다."),
+    SYSTEM_003("com.fasterxml.jackson.databind.exc.MismatchedInputException", 40000003, 400, "JSON 변환 중 문제가 있습니다."),
+    SYSTEM_004("com.fasterxml.jackson.databind.JsonMappingException", 40000004, 400, "JSON 변환 중 문제가 있습니다."),
+    SYSTEM_005("com.fasterxml.jackson.databind.exc.InvalidDefinitionException", 40000005, 400, "JSON 변환 중 문제가 있습니다."),
+    SYSTEM_006("org.springframework.http.converter.HttpMessageConversionException", 40000006, 400, "JSON 변환 중 문제가 있습니다."),
+    SYSTEM_007("org.springframework.http.converter.HttpMessageNotReadableException", 40000007, 400, "JSON 변환 중 문제가 있습니다."),
     SYSTEM_008("parameter.validation.error", 40000011, 400, "입력값 오류 입니다."),
-    SYSTEM_009("org.springframework.validation.BindException", 40000011, 400, "입력값 오류 입니다."),
-    SYSTEM_010("parameter.validation.IllegalArgumentException", 40000011, 400, "입력값 오류 입니다."),
-    SYSTEM_011("java.lang.IllegalArgumentException", 40000011, 400, "입력값 오류 입니다."),
-    SYSTEM_012("org.springframework.web.bind.MethodArgumentNotValidException", 40000011, 400, "입력값 오류 입니다."),
+    SYSTEM_009("org.springframework.validation.BindException", 40000012, 400, "입력값 오류 입니다."),
+    SYSTEM_010("parameter.validation.IllegalArgumentException", 40000013, 400, "입력값 오류 입니다."),
+    SYSTEM_011("java.lang.IllegalArgumentException", 40000014, 400, "입력값 오류 입니다."),
+    SYSTEM_012("org.springframework.web.bind.MethodArgumentNotValidException", 40000015, 400, "입력값 오류 입니다."),
     SYSTEM_013("org.springframework.data.mapping.PropertyReferenceException", 40000101, 400, "올바른 키워드가 아닙니다."),
     SYSTEM_014("org.springframework.security.authentication.BadCredentialsException", 40100001, 401, "아이디 또는 비밀번호가 일치하지않습니다."),
     SYSTEM_015("org.springframework.security.authentication.DisabledException", 40100002, 401, "유효하지 않은 사용자입니다."),
@@ -28,13 +28,13 @@ public enum ResponseCode implements ResponseCodeInterface {
     SYSTEM_018("org.springframework.web.HttpRequestMethodNotSupportedException", 40500001, 405, "잘못된 요청입니다."),
     SYSTEM_019("org.springframework.web.multipart.MaxUploadSizeExceededException", 50000001, 500, "허용 파일 크기를 초과했습니다."),
     SYSTEM_020("org.springframework.jdbc", 50000011, 500, "데이터베이스 오류"),
-    SYSTEM_021("org.apache.ibatis.reflection.ReflectionException", 50000011, 500, "데이터베이스 오류"),
-    SYSTEM_022("org.springframework.dao.DataAccessException", 50000012, 500, "데이터베이스 오류"),
-    SYSTEM_023("org.apache.ibatis.javassist.NotFoundException", 50000012, 500, "데이터베이스 오류"),
-    SYSTEM_024("org.springframework.dao.DataIntegrityViolationException", 50000013, 500, "데이터베이스 오류(외래키 참조 조건)"),
-    SYSTEM_025("java.sql.SQLException", 50000014, 500, "데이터 베이스 SQL 에러"),
-    SYSTEM_026("org.springframework.jdbc.BadSqlGrammarException", 50000015, 500, "데이터베이스 오류"),
-    SYSTEM_027("java.lang.ArithmeticException", 50000015, 500, "데이터베이스 오류"),
+    SYSTEM_021("org.apache.ibatis.reflection.ReflectionException", 50000012, 500, "데이터베이스 오류"),
+    SYSTEM_022("org.springframework.dao.DataAccessException", 50000013, 500, "데이터베이스 오류"),
+    SYSTEM_023("org.apache.ibatis.javassist.NotFoundException", 50000014, 500, "데이터베이스 오류"),
+    SYSTEM_024("org.springframework.dao.DataIntegrityViolationException", 50000015, 500, "데이터베이스 오류(외래키 참조 조건)"),
+    SYSTEM_025("java.sql.SQLException", 50000016, 500, "데이터 베이스 SQL 에러"),
+    SYSTEM_026("org.springframework.jdbc.BadSqlGrammarException", 50000017, 500, "데이터베이스 오류"),
+    SYSTEM_027("java.lang.ArithmeticException", 50000018, 500, "데이터베이스 오류"),
     SYSTEM_028("org.springframework.dao.DuplicateKeyException", 50000031, 500, "중복된 값이 존재합니다."),
     SYSTEM_029("java.security.NoSuchAlgorithmException", 50000041, 500, "해시 변환 오류"),
     // CUSTOMS
@@ -52,11 +52,13 @@ public enum ResponseCode implements ResponseCodeInterface {
     NOT_DEFINED("not_define", 50019999, 500, "정의되지않은 오류입니다."),
     ;
 
-    // 키 등록
+    // 키, 코드 등록
     private static final Map<String, ResponseCode> BY_KEY = new HashMap<>();
+    private static final Map<Integer, ResponseCode> BY_CODE = new HashMap<>();
     static {
         for (ResponseCode rc: values()) {
             BY_KEY.put(rc.key, rc);
+            BY_CODE.put(rc.code, rc);
         }
     }
 
@@ -79,6 +81,10 @@ public enum ResponseCode implements ResponseCodeInterface {
 
     public static ResponseCode findByKey(String key) {
         return BY_KEY.getOrDefault(key, NOT_DEFINED);
+    }
+
+    public static ResponseCode findByCode(int code) {
+        return BY_CODE.getOrDefault(code, NOT_DEFINED);
     }
 
     public static ResponseCode getSuccess() {

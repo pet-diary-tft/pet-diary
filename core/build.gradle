@@ -3,3 +3,7 @@ jar { enabled = true }
 
 dependencies {
 }
+
+tasks.named('test') {
+    useJUnitPlatform()
+}

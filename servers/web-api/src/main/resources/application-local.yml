@@ -13,6 +13,7 @@ pet-diary:
       password: ENC(CRcm0n/2tjTa+TFt0acXev3dPIgvTcE8)
       driver-class-name: com.mysql.cj.jdbc.Driver
       maximum-pool-size: 5
+      enabled: true
 
 spring:
   jpa:

@@ -339,7 +339,7 @@ public class AuthCtrlTests extends CtrlTestConfig {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonContent))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.result.code").value(ResponseCode.findByKey("parameter.validation.error").getCode()))
+                .andExpect(jsonPath("$.result.code").value(ResponseCode.findByKey("org.springframework.web.bind.MethodArgumentNotValidException").getCode()))
                 .andDo(document(getDocumentName(), ResourceDocumentation.resource(
                         ResourceSnippetParameters.builder()
                                 .tag("AuthCtrl")

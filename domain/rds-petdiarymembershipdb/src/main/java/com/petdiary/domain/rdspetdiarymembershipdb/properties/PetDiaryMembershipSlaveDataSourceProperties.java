@@ -14,4 +14,5 @@ public class PetDiaryMembershipSlaveDataSourceProperties {
     private String password;
     private String driverClassName;
     private int maximumPoolSize;
+    private boolean enabled = false;
 }
