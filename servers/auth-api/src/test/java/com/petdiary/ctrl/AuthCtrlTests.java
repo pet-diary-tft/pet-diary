@@ -322,7 +322,13 @@ public class AuthCtrlTests extends CtrlTestConfig {
         AuthReq.SignupDto reqDto = AuthDtoFactory.createSignupReqDto();
         reqDto.setEmail("invalid_email");
         reqDto.setPassword("invalid_password");
-        reqDto.setName("SooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooLooooooooooooooooooooooooooooooooooooooooooooooongName");
+        reqDto.setName("Soooooooooooooooooooooooooooooooooooo" +
+                "oooooooooooooooooooooooooooooooooooooooooooooooooooooooo" +
+                "oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo" +
+                "oooooooooooooooooooooooooooooooooooooooooooooooooooooooo" +
+                "ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo" +
+                "ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo" +
+                "ooooooooooooooooooooooooLooooooooooooooooooooooooooooooooooooooooooooooongName");
         String jsonContent = getJsonContent(reqDto);
 
         AuthRes.SignupDto mockSignupDto = AuthDtoFactory.createSignupResDto();
@@ -356,6 +362,26 @@ public class AuthCtrlTests extends CtrlTestConfig {
                         .content(jsonContent))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.result.code").value(ApiResponseCode.PASSWORD_CONFIRM.getCode()))
+                .andDo(document(getDocumentName(), ResourceDocumentation.resource(
+                        ResourceSnippetParameters.builder()
+                                .tag("AuthCtrl")
+                                .description("회원가입")
+                                .build()
+                )));
+    }
+
+    @Test
+    public void testSignupAlreadyExistsEmail() throws Exception {
+        AuthReq.SignupDto reqDto = AuthDtoFactory.createSignupReqDto();
+        String jsonContent = getJsonContent(reqDto);
+
+        when(authSvc.signup(any())).thenThrow(new ApiRestException(ApiResponseCode.ALREADY_EXISTS_EMAIL));
+
+        mockMvc.perform(post("/api/v1/auth/signup")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonContent))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.result.code").value(ApiResponseCode.ALREADY_EXISTS_EMAIL.getCode()))
                 .andDo(document(getDocumentName(), ResourceDocumentation.resource(
                         ResourceSnippetParameters.builder()
                                 .tag("AuthCtrl")
