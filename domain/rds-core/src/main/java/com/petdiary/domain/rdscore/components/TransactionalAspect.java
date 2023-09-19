@@ -1,4 +1,4 @@
-package com.petdiary.config;
+package com.petdiary.domain.rdscore.components;
 
 import com.petdiary.domain.rdscore.DomainCoreConstants;
 import lombok.RequiredArgsConstructor;

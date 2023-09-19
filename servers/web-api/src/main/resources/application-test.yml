@@ -6,21 +6,13 @@ pet-diary:
       password: P@ssw0rd
       driver-class-name: com.mysql.cj.jdbc.Driver
       maximum-pool-size: 5
-  slave:
-    datasource:
-      jdbc-url: jdbc:mysql://localhost:3306/pet_diary
-      username: root
-      password: P@ssw0rd
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      maximum-pool-size: 5
-      enabled: true
 
 spring:
   jpa:
     generate-ddl: true
-    show-sql: true
     properties:
       hibernate:
+        show_sql: true
         format_sql: true
         highlight_sql: true
         use_sql_comments: true
@@ -36,3 +28,4 @@ logging:
     com.petdiary: debug
     org.hibernate.sql: debug
     org.hibernate.type.descriptor.sql: trace
+    org.hibernate.orm.jdbc.bind: trace

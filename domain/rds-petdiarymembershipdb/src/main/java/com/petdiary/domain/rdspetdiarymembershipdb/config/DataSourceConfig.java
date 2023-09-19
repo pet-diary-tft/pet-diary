@@ -33,7 +33,7 @@ import javax.sql.DataSource;
         basePackages = {"com.petdiary.domain.rdspetdiarymembershipdb.repository"}
 )
 @RequiredArgsConstructor
-public class DomainDataSourceConfig implements IDomainDataSourceConfig {
+public class DataSourceConfig implements IDomainDataSourceConfig {
     private final PetDiaryMembershipMasterDataSourceProperties masterDataSourceProperties;
     private final PetDiaryMembershipSlaveDataSourceProperties slaveDataSourceProperties;
 
@@ -66,21 +66,24 @@ public class DomainDataSourceConfig implements IDomainDataSourceConfig {
     }
 
     @Override
-    @Bean("petDiaryMembershipDataSource")
-    public DataSource dataSource(
+    @Bean("petDiaryMembershipRoutingDataSource")
+    public DataSource routingDataSource(
             @Qualifier("petDiaryMembershipMasterDataSource") DataSource masterDataSource,
             @Qualifier("petDiaryMembershipSlaveDataSource") DataSource slaveDataSource
     ) {
-        // Master-Slave
-        if (slaveDataSourceProperties.isEnabled()) {
-            ReplicationRoutingDataSource routingDataSource = new ReplicationRoutingDataSource();
-            routingDataSource.setMasterSlave(masterDataSource, slaveDataSource);
-            return new LazyConnectionDataSourceProxy(routingDataSource);
-        }
-        // Standalone
-        else {
-            return masterDataSource;
-        }
+        ReplicationRoutingDataSource routingDataSource = new ReplicationRoutingDataSource();
+        routingDataSource.setMasterSlave(masterDataSource, slaveDataSource);
+        return routingDataSource;
+    }
+
+    @Override
+    @Bean("petDiaryMembershipDataSource")
+    public DataSource dataSource(
+            @Qualifier("petDiaryMembershipMasterDataSource") DataSource masterDataSource,
+            @Qualifier("petDiaryMembershipRoutingDataSource") DataSource routingDataSource
+    ) {
+        return slaveDataSourceProperties.isEnabled() ?
+                new LazyConnectionDataSourceProxy(routingDataSource) : masterDataSource;
     }
 
     @Override
