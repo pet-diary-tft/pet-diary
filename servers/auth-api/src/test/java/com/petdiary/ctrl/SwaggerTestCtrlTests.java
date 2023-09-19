@@ -7,12 +7,15 @@ import com.petdiary.controller.SwaggerTestCtrl;
 import com.petdiary.core.exception.ResponseCode;
 import com.petdiary.ctrl.config.CtrlTestConfig;
 import com.petdiary.ctrl.factory.SwaggerTestDtoFactory;
+import com.petdiary.domain.rdspetdiarymembershipdb.dto.MemberDomain;
 import com.petdiary.dto.req.SwaggerTestReq;
 import com.petdiary.dto.res.SwaggerTestRes;
 import com.petdiary.service.SwaggerTestSvc;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+
+import java.util.List;
 
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static org.mockito.Mockito.any;
@@ -85,6 +88,26 @@ public class SwaggerTestCtrlTests extends CtrlTestConfig {
                                     )
                                     .build()
                 )))
+        ;
+    }
+
+    @Test
+    public void test2Swagger() throws Exception {
+        List<MemberDomain.Dto> mockResDto = SwaggerTestDtoFactory.createTest2ResDto();
+
+        when(swaggerTestSvc.getMemberList()).thenReturn(mockResDto);
+
+        mockMvc.perform(get("/api/v1/swagger-test/member"))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(jsonPath("$.result.httpStatusCode").value(ResponseCode.SUCCESS.getHttpStatusCode())) // httpStatusCode 값 검증
+                .andExpect(jsonPath("$.result.code").value(ResponseCode.SUCCESS.getCode())) // code 값 검증
+                .andDo(document(getDocumentName(),
+                        ResourceDocumentation.resource(
+                                ResourceSnippetParameters.builder()
+                                        .tag("SwaggerTestCtrl")
+                                        .description("Swagger 테스트용 API")
+                                        .build()
+                        )))
         ;
     }
 }

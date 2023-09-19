@@ -1,5 +1,6 @@
 package com.petdiary.ctrl.factory;
 
+import com.petdiary.domain.rdspetdiarymembershipdb.dto.MemberDomain;
 import com.petdiary.dto.req.SwaggerTestReq;
 import com.petdiary.dto.res.SwaggerTestRes;
 
@@ -42,5 +43,28 @@ public class SwaggerTestDtoFactory {
                 .longTest(LONG_TEST_3)
                 .test2DtoList(test2DtoList)
                 .build();
+    }
+
+    public static List<MemberDomain.Dto> createTest2ResDto() {
+        List<MemberDomain.Dto> result = new ArrayList<>();
+        result.add(MemberDomain.Dto.builder()
+                .idx(1L)
+                .email("test@example.com")
+                .name("테스트")
+                .build());
+
+        result.add(MemberDomain.Dto.builder()
+                .idx(2L)
+                .email("asdf1234@example.com")
+                .name("김아무개")
+                .build());
+
+        result.add(MemberDomain.Dto.builder()
+                .idx(3L)
+                .email("214214215@qq.com")
+                .name("김영희")
+                .build());
+
+        return result;
     }
 }

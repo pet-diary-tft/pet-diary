@@ -1,62 +1,36 @@
 package com.petdiary.config;
 
-import com.petdiary.domain.rdscore.repository.ExtendedRepositoryImpl;
+import com.petdiary.domain.rdscore.DomainCoreConstants;
+import com.petdiary.domain.rdscore.interfaces.IAppDataSourceConfig;
+import com.petdiary.domain.rdspetdiarymembershipdb.PetDiaryMembershipConstants;
 import jakarta.persistence.EntityManagerFactory;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
 import org.springframework.orm.jpa.JpaTransactionManager;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
-
-import javax.sql.DataSource;
 
 @Configuration
-@EnableTransactionManagement
-@EnableJpaRepositories(
-        repositoryBaseClass = ExtendedRepositoryImpl.class,
-        entityManagerFactoryRef = "petDiaryMembershipEntityManagerFactory",
-        transactionManagerRef = "petDiaryMembershipTransactionManager",
-        basePackages = {"com.petdiary.domain.rdspetdiarymembershipdb.repository"}
-)
-public class DataSourceConfig {
-    /* Master-Slave 구조
-    @Primary
-    @Bean("petDiaryMembershipDataSource")
-    public DataSource petdiaryDataSource(@Qualifier("petDiaryMembershipRoutingDataSource") DataSource routingDataSource) {
-        return new LazyConnectionDataSourceProxy(routingDataSource);
-    }
-    */
+@RequiredArgsConstructor
+public class DataSourceConfig implements IAppDataSourceConfig {
+    private final JpaProperties jpaProperties;
 
-    // Standalone 구조
-    @Primary
-    @Bean("petDiaryMembershipDataSource")
-    public DataSource petdiaryDataSource(@Qualifier("petDiaryMembershipMasterDataSource") DataSource masterDataSource) {
-        return masterDataSource;
+    @Override
+    @Bean
+    public EntityManagerFactoryBuilder entityManagerFactoryBuilder() {
+        return new EntityManagerFactoryBuilder(new HibernateJpaVendorAdapter(), jpaProperties.getProperties(), null);
     }
 
+    @Override
     @Primary
-    @Bean("petDiaryMembershipEntityManagerFactory")
-    public LocalContainerEntityManagerFactoryBean EntityManagerFactory(
-            EntityManagerFactoryBuilder builder,
-            @Qualifier("petDiaryMembershipDataSource") DataSource dataSource
-    ) {
-        return builder
-                .dataSource(dataSource)
-                .packages("com.petdiary.domain.rdspetdiarymembershipdb.domain")
-                .persistenceUnit("petDiaryMembershipEntityManager")
-                .build();
-    }
-
-    @Primary
-    @Bean("petDiaryMembershipTransactionManager")
+    @Bean(DomainCoreConstants.DEFAULT_TRANSACTION_MANAGER)
     public PlatformTransactionManager transactionManager(
-            @Qualifier("petDiaryMembershipEntityManagerFactory") EntityManagerFactory entityManagerFactory
+            @Qualifier(PetDiaryMembershipConstants.ENTITY_MANAGER_FACTORY) EntityManagerFactory entityManagerFactory
     ) {
         return new JpaTransactionManager(entityManagerFactory);
     }
