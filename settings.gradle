@@ -10,4 +10,6 @@ include 'servers:auth-api'
 findProject(':servers:auth-api')?.name = 'auth-api'
 include 'domain:rds-petdiarymembershipdb'
 findProject(':domain:rds-petdiarymembershipdb')?.name = 'rds-petdiarymembershipdb'
+include 'domain:redis-petdiary'
+findProject(':domain:redis-petdiary')?.name = 'redis-petdiary'
 

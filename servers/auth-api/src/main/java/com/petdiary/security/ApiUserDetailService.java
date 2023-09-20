@@ -4,12 +4,18 @@ import com.petdiary.core.exception.ResponseCode;
 import com.petdiary.core.utils.DateUtil;
 import com.petdiary.core.utils.HttpUtil;
 import com.petdiary.domain.rdspetdiarymembershipdb.domain.Member;
+import com.petdiary.domain.rdspetdiarymembershipdb.enums.MemberRoleType;
+import com.petdiary.domain.rdspetdiarymembershipdb.enums.MemberStatusType;
 import com.petdiary.domain.rdspetdiarymembershipdb.repository.MemberRepository;
+import com.petdiary.domain.redispetdiary.dto.MemberRedis;
+import com.petdiary.domain.redispetdiary.service.MemberRedisSvc;
 import com.petdiary.properties.AuthJwtProperties;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,12 +24,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ApiUserDetailService implements UserDetailsService {
     private final MemberRepository memberRepository;
     private final AuthJwtProperties authJwtProperties;
+    private final MemberRedisSvc memberRedisSvc;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -42,6 +52,32 @@ public class ApiUserDetailService implements UserDetailsService {
         if (jwt == null) {
             request.setAttribute(ResponseCode.MIDDLEWARE_KEY, ResponseCode.UNAUTHORIZED.getKey());
             throw new UsernameNotFoundException("Member jwt not found.");
+        }
+
+        // 1-1. jwt로 캐싱 정보 확인
+        MemberRedis.Dto cachingMember = memberRedisSvc.getMemberByAccessToken(jwt);
+        if (cachingMember != null) {
+            Set<MemberRoleType> memberRoleTypes = new HashSet<>();
+            String[] memberRoleTypeStrArr = cachingMember.getRoles().split(",");
+            for (String memberRoleTypeStr: memberRoleTypeStrArr) {
+                try {
+                    MemberRoleType memberRoleType = MemberRoleType.valueOf(memberRoleTypeStr);
+                    memberRoleTypes.add(memberRoleType);
+                } catch (IllegalArgumentException ignore) {}
+            }
+
+            Set<GrantedAuthority> authorities = memberRoleTypes.stream()
+                    .map(role -> new SimpleGrantedAuthority(role.name()))
+                    .collect(Collectors.toSet());
+
+            return ApiUserPrincipal.builder()
+                    .idx(cachingMember.getIdx())
+                    .email(cachingMember.getEmail())
+                    .password(cachingMember.getPassword())
+                    .name(cachingMember.getName())
+                    .status(MemberStatusType.getByCode(cachingMember.getStatus()))
+                    .authorities(authorities)
+                    .build();
         }
 
         // 2. jwt 값 검증

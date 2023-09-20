@@ -13,3 +13,16 @@
   GRANT SELECT, INSERT, UPDATE, DELETE ON pet_diary_membership.* TO 'petdiaryuser'@'%';
   FLUSH PRIVILEGES;
   ```
+
+## Redis
+- 로컬 테스트용 도커 redis 서버 생성
+  ```shell
+  docker run --name pet-diary-redis -p 6379:6379 -d redis redis-server --requirepass 1q2w3e4r5t@#
+  ```
+- Redis 서버 접근 및 확인
+  ```shell
+  redis-cli -h 127.0.0.1 -p 6379
+  127.0.0.1:6379> AUTH 1q2w3e4r5t@#
+  127.0.0.1:6379> PING
+  PONG
+  ```

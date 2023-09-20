@@ -3,4 +3,5 @@ jar { enabled = true }
 
 dependencies {
     api project(':domain:rds-core')
+    api project(':domain:redis-petdiary')
 }
