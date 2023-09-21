@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+
 @Service
 @RequiredArgsConstructor
 public class MemberRedisSvc {
@@ -16,7 +18,7 @@ public class MemberRedisSvc {
     }
 
     public void saveMemberAccessToken(String memberAccessToken, MemberRedis.AccessTokenDto memberAccessTokenDto) {
-        redisTemplate.opsForValue().set(PetDiaryRedisPrefix.MEMBER_ACCESS_TOKEN + memberAccessToken, memberAccessTokenDto);
+        redisTemplate.opsForValue().set(PetDiaryRedisPrefix.MEMBER_ACCESS_TOKEN + memberAccessToken, memberAccessTokenDto, Duration.ofMinutes(30));
     }
 
     public MemberRedis.Dto getMemberByAccessToken(String accessToken) {
