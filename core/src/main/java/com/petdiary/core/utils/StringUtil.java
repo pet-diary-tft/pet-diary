@@ -6,10 +6,8 @@ import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class StringUtil extends StringUtils {
     public static String encodeURIComponent(String s) {
@@ -106,5 +104,36 @@ public class StringUtil extends StringUtils {
         }
         // 4. 결과 반환
         return result.toString();
+    }
+
+    /**
+     * 쉼표로 구분된 Enum명 문자열을 Enum Set으로 변환하는 함수
+     */
+    public static <E extends Enum<E>> Set<E> stringToEnumSet(String text, Class<E> enumType) {
+        Set<E> result = new HashSet<>();
+
+        if (!hasText(text)) {
+            return result;
+        }
+
+        String[] enumStrings = text.split(",");
+        for (String enumString: enumStrings) {
+            try {
+                E enumValue = Enum.valueOf(enumType, enumString);
+                result.add(enumValue);
+            } catch (IllegalArgumentException ignore) {}
+        }
+        return result;
+    }
+
+    /**
+     * Enum Set을 쉼표로 구분된 Enum명 문자열로 반환하는 함수
+     */
+    public static <E extends Enum<E>> String enumSetToString(Set<E> enumSet) {
+        return Optional.ofNullable(enumSet)
+                .orElse(Collections.emptySet())
+                .stream()
+                .map(Enum::name)
+                .collect(Collectors.joining(","));
     }
 }

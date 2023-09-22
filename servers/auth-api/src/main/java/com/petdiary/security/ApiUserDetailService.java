@@ -3,6 +3,7 @@ package com.petdiary.security;
 import com.petdiary.core.exception.ResponseCode;
 import com.petdiary.core.utils.DateUtil;
 import com.petdiary.core.utils.HttpUtil;
+import com.petdiary.core.utils.StringUtil;
 import com.petdiary.domain.rdspetdiarymembershipdb.domain.Member;
 import com.petdiary.domain.rdspetdiarymembershipdb.enums.MemberRoleType;
 import com.petdiary.domain.rdspetdiarymembershipdb.enums.MemberStatusType;
@@ -24,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -57,16 +57,8 @@ public class ApiUserDetailService implements UserDetailsService {
         // 1-1. jwt로 캐싱 정보 확인
         MemberRedis.Dto cachingMember = memberRedisSvc.getMemberByAccessToken(jwt);
         if (cachingMember != null) {
-            Set<MemberRoleType> memberRoleTypes = new HashSet<>();
-            String[] memberRoleTypeStrArr = cachingMember.getRoles().split(",");
-            for (String memberRoleTypeStr: memberRoleTypeStrArr) {
-                try {
-                    MemberRoleType memberRoleType = MemberRoleType.valueOf(memberRoleTypeStr);
-                    memberRoleTypes.add(memberRoleType);
-                } catch (IllegalArgumentException ignore) {}
-            }
-
-            Set<GrantedAuthority> authorities = memberRoleTypes.stream()
+            Set<GrantedAuthority> authorities = StringUtil.stringToEnumSet(cachingMember.getRoles(), MemberRoleType.class)
+                    .stream()
                     .map(role -> new SimpleGrantedAuthority(role.name()))
                     .collect(Collectors.toSet());
 
