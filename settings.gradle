@@ -12,4 +12,6 @@ include 'domain:rds-petdiarymembershipdb'
 findProject(':domain:rds-petdiarymembershipdb')?.name = 'rds-petdiarymembershipdb'
 include 'domain:redis-petdiary'
 findProject(':domain:redis-petdiary')?.name = 'redis-petdiary'
+include 'domain:redis-core'
+findProject(':domain:redis-core')?.name = 'redis-core'
 

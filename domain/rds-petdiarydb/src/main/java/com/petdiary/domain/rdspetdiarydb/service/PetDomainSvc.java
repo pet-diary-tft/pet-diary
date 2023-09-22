@@ -1,5 +1,6 @@
 package com.petdiary.domain.rdspetdiarydb.service;
 
+import com.petdiary.domain.rdspetdiarydb.PetDiaryConstants;
 import com.petdiary.domain.rdspetdiarydb.dto.PetDomain;
 import com.petdiary.domain.rdspetdiarydb.repository.PetRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 public class PetDomainSvc {
     private final PetRepository petRepository;
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, transactionManager = PetDiaryConstants.TRANSACTION_MANAGER)
     public List<PetDomain.Dto> getList() {
         return petRepository.findAll().stream()
                 .map(pet -> PetDomain.Dto.builder()

@@ -5,6 +5,7 @@ import lombok.*;
 public class MemberRedis {
     @Getter @Setter @Builder
     @NoArgsConstructor @AllArgsConstructor
+    @ToString
     public static class Dto {
         private Long idx;
         private String email;
@@ -17,6 +18,7 @@ public class MemberRedis {
 
     @Getter @Setter @Builder
     @NoArgsConstructor @AllArgsConstructor
+    @ToString
     public static class AccessTokenDto {
         private Long memberIdx;
         private Integer tokenVersion;
