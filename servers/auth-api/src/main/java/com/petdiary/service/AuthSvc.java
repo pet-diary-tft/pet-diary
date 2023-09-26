@@ -11,7 +11,8 @@ import com.petdiary.domain.rdspetdiarymembershipdb.enums.MemberRoleType;
 import com.petdiary.domain.rdspetdiarymembershipdb.enums.MemberStatusType;
 import com.petdiary.domain.rdspetdiarymembershipdb.repository.MemberRefreshTokenRepository;
 import com.petdiary.domain.rdspetdiarymembershipdb.repository.MemberRepository;
-import com.petdiary.domain.redispetdiary.dto.MemberRedis;
+import com.petdiary.domain.redispetdiary.domain.RedisMember;
+import com.petdiary.domain.redispetdiary.domain.RedisMemberAccessToken;
 import com.petdiary.domain.redispetdiary.service.MemberRedisSvc;
 import com.petdiary.dto.req.AuthReq;
 import com.petdiary.dto.res.AuthRes;
@@ -96,7 +97,7 @@ public class AuthSvc {
         memberRefreshTokenRepository.save(rt);
 
         // 3-3. Redis Caching
-        memberRedisSvc.saveMember(MemberRedis.Dto.builder()
+        memberRedisSvc.saveMember(RedisMember.builder()
                 .idx(memberIdx)
                 .email(principal.getEmail())
                 .password(principal.getPassword())
@@ -107,9 +108,11 @@ public class AuthSvc {
                         .collect(Collectors.joining(",")))
                 .tokenVersion(1)
                 .build());
-        memberRedisSvc.saveMemberAccessToken(jwt, MemberRedis.AccessTokenDto.builder()
+        memberRedisSvc.saveMemberAccessToken(RedisMemberAccessToken.builder()
+                .jwt(jwt)
                 .memberIdx(memberIdx)
                 .tokenVersion(1)
+                .expiredTime(60 * 30)
                 .build());
 
         // 4. resDto
@@ -150,7 +153,7 @@ public class AuthSvc {
         memberRepository.save(member);
 
         // 6. Redis Caching
-        memberRedisSvc.saveMember(MemberRedis.Dto.builder()
+        memberRedisSvc.saveMember(RedisMember.builder()
                 .idx(memberIdx)
                 .email(member.getEmail())
                 .password(member.getPassword())
@@ -161,9 +164,11 @@ public class AuthSvc {
                         .collect(Collectors.joining(",")))
                 .tokenVersion(1)
                 .build());
-        memberRedisSvc.saveMemberAccessToken(jwt, MemberRedis.AccessTokenDto.builder()
+        memberRedisSvc.saveMemberAccessToken(RedisMemberAccessToken.builder()
+                .jwt(jwt)
                 .memberIdx(memberIdx)
                 .tokenVersion(1)
+                .expiredTime(60 * 30)
                 .build());
 
         // 6. resDto 반환

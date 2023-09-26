@@ -8,8 +8,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration("petDiaryRedisConfig")
 @RequiredArgsConstructor
@@ -28,14 +26,10 @@ public class RedisConfig {
 
     @Bean("petDiaryRedisTemplate")
     public RedisTemplate<String, Object> redisTemplate(
-            @Qualifier("petDiaryRedisConnectionFactory") LettuceConnectionFactory redisConnectionFactory,
-            @Qualifier("coreStringRedisSerializer") StringRedisSerializer stringRedisSerializer,
-            @Qualifier("coreJsonRedisSerializer") Jackson2JsonRedisSerializer<Object> jsonRedisSerializer
+            @Qualifier("petDiaryRedisConnectionFactory") LettuceConnectionFactory redisConnectionFactory
     ) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory);
-        redisTemplate.setKeySerializer(stringRedisSerializer);
-        redisTemplate.setValueSerializer(jsonRedisSerializer);
         return redisTemplate;
     }
 }

@@ -8,7 +8,7 @@ import com.petdiary.domain.rdspetdiarymembershipdb.domain.Member;
 import com.petdiary.domain.rdspetdiarymembershipdb.enums.MemberRoleType;
 import com.petdiary.domain.rdspetdiarymembershipdb.enums.MemberStatusType;
 import com.petdiary.domain.rdspetdiarymembershipdb.repository.MemberRepository;
-import com.petdiary.domain.redispetdiary.dto.MemberRedis;
+import com.petdiary.domain.redispetdiary.domain.RedisMember;
 import com.petdiary.domain.redispetdiary.service.MemberRedisSvc;
 import com.petdiary.properties.AuthJwtProperties;
 import io.jsonwebtoken.*;
@@ -55,7 +55,7 @@ public class ApiUserDetailService implements UserDetailsService {
         }
 
         // 1-1. jwt로 캐싱 정보 확인
-        MemberRedis.Dto cachingMember = memberRedisSvc.getMemberByAccessToken(jwt);
+        RedisMember cachingMember = memberRedisSvc.getMemberByAccessToken(jwt);
         if (cachingMember != null) {
             Set<GrantedAuthority> authorities = StringUtil.stringToEnumSet(cachingMember.getRoles(), MemberRoleType.class)
                     .stream()

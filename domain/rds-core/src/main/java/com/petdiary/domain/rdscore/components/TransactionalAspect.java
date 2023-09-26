@@ -8,6 +8,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,7 @@ import java.lang.reflect.Method;
 @Component
 @RequiredArgsConstructor
 @Slf4j
+@Profile("!prod")
 public class TransactionalAspect {
     private final ApplicationContext applicationContext;
 

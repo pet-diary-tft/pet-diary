@@ -1,32 +1,29 @@
 package com.petdiary.domain.redispetdiary.service;
 
-import com.petdiary.domain.rediscore.service.AbstractRedisCoreSvc;
-import com.petdiary.domain.redispetdiary.PetDiaryRedisPrefix;
-import com.petdiary.domain.redispetdiary.dto.MemberRedis;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.redis.core.RedisTemplate;
+import com.petdiary.domain.redispetdiary.domain.RedisMember;
+import com.petdiary.domain.redispetdiary.domain.RedisMemberAccessToken;
+import com.petdiary.domain.redispetdiary.repository.RedisMemberAccessTokenRepository;
+import com.petdiary.domain.redispetdiary.repository.RedisMemberRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
-
 @Service
-public class MemberRedisSvc extends AbstractRedisCoreSvc {
-    public MemberRedisSvc(@Qualifier("petDiaryRedisTemplate") RedisTemplate<String, Object> redisTemplate) {
-        super(redisTemplate);
+@RequiredArgsConstructor
+public class MemberRedisSvc {
+    private final RedisMemberRepository redisMemberRepository;
+    private final RedisMemberAccessTokenRepository redisMemberAccessTokenRepository;
+
+    public void saveMember(RedisMember redisMember) {
+        redisMemberRepository.save(redisMember);
     }
 
-    public void saveMember(MemberRedis.Dto memberRedisDto) {
-        set(PetDiaryRedisPrefix.MEMBER + memberRedisDto.getIdx(), memberRedisDto);
+    public void saveMemberAccessToken(RedisMemberAccessToken redisMemberAccessToken) {
+        redisMemberAccessTokenRepository.save(redisMemberAccessToken);
     }
 
-    public void saveMemberAccessToken(String memberAccessToken, MemberRedis.AccessTokenDto memberAccessTokenDto) {
-        set(PetDiaryRedisPrefix.MEMBER_ACCESS_TOKEN + memberAccessToken, memberAccessTokenDto, Duration.ofMinutes(30));
-    }
-
-    public MemberRedis.Dto getMemberByAccessToken(String accessToken) {
-        MemberRedis.AccessTokenDto accessTokenDto = (MemberRedis.AccessTokenDto) get(PetDiaryRedisPrefix.MEMBER_ACCESS_TOKEN + accessToken);
-        if (accessTokenDto == null) return null;
-
-        return (MemberRedis.Dto) get(PetDiaryRedisPrefix.MEMBER + accessTokenDto.getMemberIdx());
+    public RedisMember getMemberByAccessToken(String jwt) {
+        RedisMemberAccessToken redisMemberAccessToken = redisMemberAccessTokenRepository.findById(jwt).orElse(null);
+        if (redisMemberAccessToken == null) return null;
+        return redisMemberRepository.findById(redisMemberAccessToken.getMemberIdx()).orElse(null);
     }
 }
