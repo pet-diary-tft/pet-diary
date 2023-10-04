@@ -46,3 +46,17 @@ auth:
     refresh-expiry-in-days: 30
     type: Bearer
     secret: ENC(ybNUuE0/DwL2sRonHAa610O6bUcJ7RL/TEmo+ejzRCb1uDmZiiHfey2byytCua9HP3fSp0dnpuJp5nLGI6aawQONJ6nywyptXEUVUxPOfbai7xQqT+Ld38tWVVhBLdsSDh6lN6pS1qwajP+fMC+7yNioknbEqKKkp063Xiaxoc2epBnvnsQfexMcpXcpWw5w)
+
+
+management:
+  endpoint:
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: prometheus,info,health
+  prometheus:
+    metrics:
+      export:
+        enabled: true
