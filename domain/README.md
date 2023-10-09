@@ -21,7 +21,10 @@
   ```
 - Redis 서버 접근 및 확인
   ```shell
+  # for host redis
   redis-cli -h 127.0.0.1 -p 6379
+  # for docker redis
+  docker exec -it pet-diary-redis redis-cli
   127.0.0.1:6379> AUTH 1q2w3e4r5t@#
   127.0.0.1:6379> PING
   PONG
