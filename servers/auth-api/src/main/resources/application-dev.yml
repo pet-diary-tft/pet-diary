@@ -47,8 +47,7 @@ logging:
     name: /workspace/projects/auth-api/logs/application.log
   logback:
     rollingpolicy:
-      file-name-pattern: application.%d{yyyy-MM-dd}.%i.log
-      max-history: 30
+      max-history: 14
 
 cors:
   allowed-credentials: true
