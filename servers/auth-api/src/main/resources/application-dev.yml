@@ -43,6 +43,13 @@ logging:
     org.hibernate.sql: debug
     org.hibernate.type.descriptor.sql: trace
     org.hibernate.orm.jdbc.bind: trace
+  file:
+    name: /workspace/projects/auth-api/logs/application.log
+  logback:
+    rollingpolicy:
+      file-name-pattern: application.%d{yyyy-MM-dd}.%i.log
+      max-history: 30
+
 cors:
   allowed-credentials: true
   allowed-header: "*"
