@@ -1,9 +1,9 @@
 pet-diary:
   master:
     datasource:
-      jdbc-url: ENC(Sn1LzUYeNspIoPP/jvJHk1drOclFK95HiY1KcCi3+QTGfrWrZ4V3fRICzSkb1YEtXIaSFib6q06tnEahr4lvBSQysNrdJGWcp/1kIfkBQ7uzDYvKKU9DaXMNfSttWoTh00R/SCf/6nU=)
-      username: ENC(3083ya/0xJD1IBT8LFFLNtLMQjgqQmei)
-      password: ENC(CRcm0n/2tjTa+TFt0acXev3dPIgvTcE8)
+      jdbc-url: jdbc:mysql://localhost:3306/pet_diary
+      username: root
+      password: P@ssw0rd
       driver-class-name: com.mysql.cj.jdbc.Driver
       maximum-pool-size: 5
 
@@ -28,3 +28,4 @@ logging:
     com.petdiary: debug
     org.hibernate.sql: debug
     org.hibernate.type.descriptor.sql: trace
+    org.hibernate.orm.jdbc.bind: trace

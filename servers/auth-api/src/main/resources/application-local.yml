@@ -1,17 +1,17 @@
 pet-diary-membership:
   master:
     datasource:
-      jdbc-url: ENC(vzZC6GMjFC8V/XVuOzijzwS9JlW8wFdM3xtsZwV/FhbERT4FxfYpeHzAVBdISwVBQueS+oO45sJDdjSAfJCkgMx6iTb4ROVNWFMi0R/44ZrsE3LAi5RhsxbU5BdIO7nLT4y1S6okpNlu4a9pj37Y3A==)
-      username: ENC(3083ya/0xJD1IBT8LFFLNtLMQjgqQmei)
-      password: ENC(CRcm0n/2tjTa+TFt0acXev3dPIgvTcE8)
+      jdbc-url: jdbc:mysql://localhost:3306/pet_diary_membership
+      username: root
+      password: P@ssw0rd
       driver-class-name: com.mysql.cj.jdbc.Driver
       maximum-pool-size: 5
   slave:
     datasource:
       enabled: true
-      jdbc-url: ENC(vzZC6GMjFC8V/XVuOzijzwS9JlW8wFdM3xtsZwV/FhbERT4FxfYpeHzAVBdISwVBQueS+oO45sJDdjSAfJCkgMx6iTb4ROVNWFMi0R/44ZrsE3LAi5RhsxbU5BdIO7nLT4y1S6okpNlu4a9pj37Y3A==)
-      username: ENC(3083ya/0xJD1IBT8LFFLNtLMQjgqQmei)
-      password: ENC(CRcm0n/2tjTa+TFt0acXev3dPIgvTcE8)
+      jdbc-url: jdbc:mysql://localhost:3306/pet_diary_membership
+      username: root
+      password: P@ssw0rd
       driver-class-name: com.mysql.cj.jdbc.Driver
       maximum-pool-size: 5
 
@@ -49,3 +49,7 @@ cors:
   allowed-method: "*"
   allowed-origins:
     - http://localhost:3000
+
+auth:
+  jwt:
+    secret: 2bf0bacbc66ce8638bfbc35d5541e20df0acf33a0bf3c6ca75dc146b1dcfbbc636db30003674bca49b49026dfa37aad315d7ec314436c867841536a9ce18bcf3
