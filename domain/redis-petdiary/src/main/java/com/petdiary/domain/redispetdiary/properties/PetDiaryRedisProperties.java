@@ -12,4 +12,5 @@ public class PetDiaryRedisProperties {
     private String host;
     private String password;
     private int port = 6379;
+    private boolean useTls = true;
 }

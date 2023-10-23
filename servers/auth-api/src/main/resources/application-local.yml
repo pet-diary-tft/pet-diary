@@ -20,6 +20,7 @@ redis:
     host: 127.0.0.1
     port: 6379
     password: 1q2w3e4r5t@#
+    use-tls: false
 
 spring:
   jpa:
