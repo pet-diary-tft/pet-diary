@@ -44,6 +44,7 @@ logging:
     org.hibernate.sql: debug
     org.hibernate.type.descriptor.sql: trace
     org.hibernate.orm.jdbc.bind: trace
+
 cors:
   allowed-credentials: true
   allowed-header: "*"
