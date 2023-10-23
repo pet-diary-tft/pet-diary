@@ -48,4 +48,4 @@ cors:
   allowed-header: "*"
   allowed-method: "*"
   allowed-origins:
-    - http://localhost:3000
+    - https://auth-api.kjb4494.site
