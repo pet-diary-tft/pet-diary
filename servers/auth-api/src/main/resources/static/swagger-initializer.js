@@ -9,7 +9,7 @@ window.onload = function() {
         name: "Local"
       },
       {
-        url: "https://dev.example.com/static/swagger-ui/openapi3.yaml",
+        url: "https://auth-api.kjb4494.site/static/swagger-ui/openapi3.yaml",
         name: "Dev"
       }
     ],

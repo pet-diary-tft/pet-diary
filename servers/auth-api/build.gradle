@@ -45,7 +45,7 @@ static def getOpenAPI3Server() {
         case "prod":
             return "https://prod.example.com"
         case "dev":
-            return "https://dev.example.com"
+            return "https://auth-api.kjb4494.site"
         default:
             return "http://localhost:8081"
     }
