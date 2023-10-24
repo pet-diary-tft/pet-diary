@@ -53,8 +53,8 @@ static def getOpenAPI3Server() {
 
 openapi3 {
     server = getOpenAPI3Server()
-    title = 'PetDiary API Docs'
-    description = 'PetDiary API 명세서입니다.<br/>' +
+    title = 'PetDiary Auth API Docs'
+    description = 'PetDiary Auth API 명세서입니다.<br/>' +
             'AuthCtrl에서 로그인 API를 호출해서 받은 accessToken을 Authorize 버튼을 누른 뒤 넣어주시면 로그인 됩니다.'
     version = '0.0.1-SNAPSHOT'
     format = 'yaml'
