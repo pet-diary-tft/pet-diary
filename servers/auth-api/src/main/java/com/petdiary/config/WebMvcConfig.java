@@ -49,7 +49,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         // server env profiles
         if (isProfileActive("prod", "dev")) {
-            registry.addResourceHandler("/static/swagger-ui/openapi3.yaml").addResourceLocations("classpath:/static/swagger-ui/openapi3.yaml");
+            registry.addResourceHandler("/static/swagger-ui/**").addResourceLocations("classpath:/static/swagger-ui/");
         }
         // local env profiles
         else {
