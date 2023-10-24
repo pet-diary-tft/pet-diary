@@ -54,4 +54,6 @@ cors:
   allowed-header: "*"
   allowed-method: "*"
   allowed-origins:
-    - https://auth-api.kjb4494.site
+    - https://kjb4494.site
+    - https://www.kjb4494.site
+    - https://swagger.kjb4494.site

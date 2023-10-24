@@ -7,10 +7,6 @@ window.onload = function() {
       {
         url: "http://localhost:8081/static/swagger-ui/openapi3.yaml",
         name: "Local"
-      },
-      {
-        url: "https://auth-api.kjb4494.site/static/swagger-ui/openapi3.yaml",
-        name: "Dev"
       }
     ],
     dom_id: '#swagger-ui',
