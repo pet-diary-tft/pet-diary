@@ -15,3 +15,7 @@
 ### 문서 자동화
 - pet-diary > servers > auth-api > documentation > openapi3 실행
 - [_http://localhost:8081/swagger-ui.html_](http://localhost:8081/swagger-ui.html) 접속
+- docker swagger-ui 사용시
+  ```shell
+  sudo docker run -d -p 8080:8080 -e URLS='[{"url": "http://localhost:8081/static/swagger-ui/openapi3.yaml", "name": "pet-diary-auth-api"}]' --name swagger swaggerapi/swagger-ui
+  ```

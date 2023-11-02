@@ -17,7 +17,11 @@
     - S3
     - ECR
     - ECS
-- 참고
+- 참고 문서 및 코드
+  - [_Jasypt 암호화_](./core/src/test/java/JasyptTests.java)
+  - [_mysql & redis_](./domain/README.md)
+  - [_auth-api-server_](./servers/auth-api/README.md)
+- 참고 외부 링크
     - [_OpenAPI Specification을 이용한 더욱 효과적인 API 문서화_](https://tech.kakaopay.com/post/openapi-documentation/)
 
 ### Frontend
