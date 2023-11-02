@@ -7,7 +7,7 @@ public class UserDtoFactory {
         UserReq.ChangePasswordDto reqDto = new UserReq.ChangePasswordDto();
         reqDto.setOldPassword("oldPassword");
         reqDto.setNewPassword("newPassword");
-        reqDto.setNewPassword("newPassword");
+        reqDto.setNewPasswordConfirm("newPassword");
         return reqDto;
     }
 }
