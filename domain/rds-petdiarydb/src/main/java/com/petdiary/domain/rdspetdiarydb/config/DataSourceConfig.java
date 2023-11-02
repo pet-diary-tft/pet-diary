@@ -1,8 +1,7 @@
 package com.petdiary.domain.rdspetdiarydb.config;
 
-import com.petdiary.domain.rdscore.NoOpDataSource;
 import com.petdiary.domain.rdscore.ReplicationRoutingDataSource;
-import com.petdiary.domain.rdscore.interfaces.IDomainDataSourceConfig;
+import com.petdiary.domain.rdscore.interfaces.IDomainMasterSlaveDataSourceConfig;
 import com.petdiary.domain.rdscore.repository.ExtendedRepositoryImpl;
 import com.petdiary.domain.rdspetdiarydb.PetDiaryConstants;
 import com.petdiary.domain.rdspetdiarydb.properties.PetDiaryMasterDataSourceProperties;
@@ -11,7 +10,6 @@ import com.zaxxer.hikari.HikariDataSource;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,7 +31,7 @@ import javax.sql.DataSource;
         basePackages = {"com.petdiary.domain.rdspetdiarydb.repository"}
 )
 @RequiredArgsConstructor
-public class DataSourceConfig implements IDomainDataSourceConfig {
+public class DataSourceConfig implements IDomainMasterSlaveDataSourceConfig {
     private final PetDiaryMasterDataSourceProperties masterDataSourceProperties;
     private final PetDiarySlaveDataSourceProperties slaveDataSourceProperties;
 
@@ -52,10 +50,6 @@ public class DataSourceConfig implements IDomainDataSourceConfig {
     @Override
     @Bean("petDiarySlaveDataSource")
     public DataSource slaveDataSource() {
-        if (!slaveDataSourceProperties.isEnabled()) {
-            return DataSourceBuilder.create().type(NoOpDataSource.class).build();
-        }
-
         HikariDataSource dataSource = new HikariDataSource();
         dataSource.setJdbcUrl(slaveDataSourceProperties.getJdbcUrl());
         dataSource.setUsername(slaveDataSourceProperties.getUsername());
@@ -78,12 +72,8 @@ public class DataSourceConfig implements IDomainDataSourceConfig {
 
     @Override
     @Bean("petDiaryDataSource")
-    public DataSource dataSource(
-            @Qualifier("petDiaryMasterDataSource") DataSource masterDataSource,
-            @Qualifier("petDiaryRoutingDataSource") DataSource routingDataSource
-    ) {
-        return slaveDataSourceProperties.isEnabled() ?
-                new LazyConnectionDataSourceProxy(routingDataSource) : masterDataSource;
+    public DataSource dataSource(@Qualifier("petDiaryRoutingDataSource") DataSource routingDataSource) {
+        return new LazyConnectionDataSourceProxy(routingDataSource);
     }
 
     @Override

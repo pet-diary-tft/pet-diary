@@ -6,14 +6,6 @@ pet-diary-membership:
       password: P@ssw0rd
       driver-class-name: com.mysql.cj.jdbc.Driver
       maximum-pool-size: 5
-  slave:
-    datasource:
-      enabled: true
-      jdbc-url: jdbc:mysql://localhost:3306/pet_diary_membership
-      username: root
-      password: P@ssw0rd
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      maximum-pool-size: 5
 
 redis:
   pet-diary:

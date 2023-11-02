@@ -1,22 +1,17 @@
 package com.petdiary.domain.rdspetdiarymembershipdb.config;
 
-import com.petdiary.domain.rdscore.interfaces.IDomainDataSourceConfig;
-import com.petdiary.domain.rdscore.NoOpDataSource;
-import com.petdiary.domain.rdscore.ReplicationRoutingDataSource;
+import com.petdiary.domain.rdscore.interfaces.IDomainStandaloneDataSourceConfig;
 import com.petdiary.domain.rdscore.repository.ExtendedRepositoryImpl;
 import com.petdiary.domain.rdspetdiarymembershipdb.PetDiaryMembershipConstants;
 import com.petdiary.domain.rdspetdiarymembershipdb.properties.PetDiaryMembershipMasterDataSourceProperties;
-import com.petdiary.domain.rdspetdiarymembershipdb.properties.PetDiaryMembershipSlaveDataSourceProperties;
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -33,13 +28,12 @@ import javax.sql.DataSource;
         basePackages = {"com.petdiary.domain.rdspetdiarymembershipdb.repository"}
 )
 @RequiredArgsConstructor
-public class DataSourceConfig implements IDomainDataSourceConfig {
+public class DataSourceConfig implements IDomainStandaloneDataSourceConfig {
     private final PetDiaryMembershipMasterDataSourceProperties masterDataSourceProperties;
-    private final PetDiaryMembershipSlaveDataSourceProperties slaveDataSourceProperties;
 
     @Override
-    @Bean("petDiaryMembershipMasterDataSource")
-    public DataSource masterDataSource() {
+    @Bean("petDiaryMembershipDataSource")
+    public DataSource dataSource() {
         HikariDataSource dataSource = new HikariDataSource();
         dataSource.setJdbcUrl(masterDataSourceProperties.getJdbcUrl());
         dataSource.setUsername(masterDataSourceProperties.getUsername());
@@ -47,43 +41,6 @@ public class DataSourceConfig implements IDomainDataSourceConfig {
         dataSource.setDriverClassName(masterDataSourceProperties.getDriverClassName());
         dataSource.setMaximumPoolSize(masterDataSourceProperties.getMaximumPoolSize());
         return dataSource;
-    }
-
-    @Override
-    @Bean("petDiaryMembershipSlaveDataSource")
-    public DataSource slaveDataSource() {
-        if (!slaveDataSourceProperties.isEnabled()) {
-            return DataSourceBuilder.create().type(NoOpDataSource.class).build();
-        }
-
-        HikariDataSource dataSource = new HikariDataSource();
-        dataSource.setJdbcUrl(slaveDataSourceProperties.getJdbcUrl());
-        dataSource.setUsername(slaveDataSourceProperties.getUsername());
-        dataSource.setPassword(slaveDataSourceProperties.getPassword());
-        dataSource.setDriverClassName(slaveDataSourceProperties.getDriverClassName());
-        dataSource.setMaximumPoolSize(slaveDataSourceProperties.getMaximumPoolSize());
-        return dataSource;
-    }
-
-    @Override
-    @Bean("petDiaryMembershipRoutingDataSource")
-    public DataSource routingDataSource(
-            @Qualifier("petDiaryMembershipMasterDataSource") DataSource masterDataSource,
-            @Qualifier("petDiaryMembershipSlaveDataSource") DataSource slaveDataSource
-    ) {
-        ReplicationRoutingDataSource routingDataSource = new ReplicationRoutingDataSource();
-        routingDataSource.setMasterSlave(masterDataSource, slaveDataSource);
-        return routingDataSource;
-    }
-
-    @Override
-    @Bean("petDiaryMembershipDataSource")
-    public DataSource dataSource(
-            @Qualifier("petDiaryMembershipMasterDataSource") DataSource masterDataSource,
-            @Qualifier("petDiaryMembershipRoutingDataSource") DataSource routingDataSource
-    ) {
-        return slaveDataSourceProperties.isEnabled() ?
-                new LazyConnectionDataSourceProxy(routingDataSource) : masterDataSource;
     }
 
     @Override

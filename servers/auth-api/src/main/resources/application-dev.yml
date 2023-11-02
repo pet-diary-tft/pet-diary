@@ -6,14 +6,6 @@ pet-diary-membership:
       password: ENC(CRcm0n/2tjTa+TFt0acXev3dPIgvTcE8)
       driver-class-name: com.mysql.cj.jdbc.Driver
       maximum-pool-size: 5
-  slave:
-    datasource:
-      enabled: true
-      jdbc-url: ENC(YVY2eyDp/7OUlNcDgFRX/jm/6JPrUXE+KBSCuu71GvMa3QAhXDgExSyksZMKbPdv5bN0Cm6TbamAKRjDlTKl//WoFFHaYwhI1uXq2OazUNamw2Y/Vv/CHfD8Tai7nm2NtBIsVrbGBh0y6gL5EKX/jQ==)
-      username: ENC(3083ya/0xJD1IBT8LFFLNtLMQjgqQmei)
-      password: ENC(CRcm0n/2tjTa+TFt0acXev3dPIgvTcE8)
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      maximum-pool-size: 5
 
 redis:
   pet-diary:

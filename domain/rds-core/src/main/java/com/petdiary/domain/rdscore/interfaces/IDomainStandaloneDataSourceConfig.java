@@ -7,11 +7,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
 
-public interface IDomainDataSourceConfig {
-    DataSource masterDataSource();
-    DataSource slaveDataSource();
-    DataSource routingDataSource(DataSource masterDataSource, DataSource slaveDataSource);
-    DataSource dataSource(DataSource masterDataSource, DataSource slaveDataSource);
+public interface IDomainStandaloneDataSourceConfig {
+    DataSource dataSource();
     LocalContainerEntityManagerFactoryBean entityManagerFactory(EntityManagerFactoryBuilder builder, DataSource dataSource);
     PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory);
 }

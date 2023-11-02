@@ -6,6 +6,13 @@ pet-diary:
       password: ENC(CRcm0n/2tjTa+TFt0acXev3dPIgvTcE8)
       driver-class-name: com.mysql.cj.jdbc.Driver
       maximum-pool-size: 5
+  slave:
+    datasource:
+      jdbc-url: ENC(ZI3IlHa5kSiwK3+xButTNcJucq1ldaluGpajbVhQc3f6Lb84BUCG2m6ZMyrd+GKmE96byAsZ1NMHKyrgQyzK63FSzO6AnKhLYnli82LlSwmhwBXqcpzuLVyYgPzlr+grWSVrVMAt3Yc=)
+      username: ENC(3083ya/0xJD1IBT8LFFLNtLMQjgqQmei)
+      password: ENC(CRcm0n/2tjTa+TFt0acXev3dPIgvTcE8)
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      maximum-pool-size: 5
 
 spring:
   jpa:
