@@ -4,6 +4,7 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.TimeToLive;
+import org.springframework.data.redis.core.index.Indexed;
 
 @Getter @ToString
 @Builder @AllArgsConstructor @NoArgsConstructor
@@ -11,8 +12,8 @@ import org.springframework.data.redis.core.TimeToLive;
 public class RedisMemberAccessToken {
     @Id
     private String jwt;
+    @Indexed
     private Long memberIdx;
-    private Integer tokenVersion;
 
     @TimeToLive
     private long expiredTime;

@@ -9,6 +9,7 @@ import com.petdiary.domain.rdspetdiarymembershipdb.enums.MemberRoleType;
 import com.petdiary.domain.rdspetdiarymembershipdb.enums.MemberStatusType;
 import com.petdiary.domain.rdspetdiarymembershipdb.repository.MemberRepository;
 import com.petdiary.domain.redispetdiary.domain.RedisMember;
+import com.petdiary.domain.redispetdiary.domain.RedisMemberAccessToken;
 import com.petdiary.domain.redispetdiary.service.MemberRedisSvc;
 import com.petdiary.properties.AuthJwtProperties;
 import io.jsonwebtoken.*;
@@ -24,7 +25,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -109,12 +112,14 @@ public class ApiUserDetailService implements UserDetailsService {
 
             // 3-3 액세스 토큰 검증을 위한 값
             accessTokenExpiresAt = member == null ? null : member.getAccessTokenExpiresAt();
-        } catch (Exception ignore) {}
+        } catch (Exception ignore) {
+        }
 
         // 4. 액세스 토큰 검증
+        LocalDateTime jwtExpiration = null;
         if (accessTokenExpiresAt != null) {
-            LocalDateTime jwtExpiration = DateUtil.convertToLocalDateTime(claimsJws.getBody().getExpiration());
-            if (jwtExpiration.isBefore(accessTokenExpiresAt)) {
+            jwtExpiration = DateUtil.convertToLocalDateTime(claimsJws.getBody().getExpiration());
+            if (jwtExpiration.isBefore(accessTokenExpiresAt.plus(authJwtProperties.getExpiryInMs(), ChronoUnit.MILLIS))) {
                 request.setAttribute(ResponseCode.MIDDLEWARE_KEY, ResponseCode.EXPIRED_JWT.getKey());
                 throw new UsernameNotFoundException("Expired jwt.");
             }
@@ -127,6 +132,23 @@ public class ApiUserDetailService implements UserDetailsService {
             throw new UsernameNotFoundException(String.format("%s is disabled(status: %s) member.",
                     userPrincipal.getUsername(), userPrincipal.getStatus().name()));
         }
+
+        // 6. redis caching
+        memberRedisSvc.saveMember(RedisMember.builder()
+                .idx(userPrincipal.getIdx())
+                .email(userPrincipal.getEmail())
+                .password(userPrincipal.getPassword())
+                .name(userPrincipal.getName())
+                .status(userPrincipal.getStatus().getCode())
+                .roles(userPrincipal.getAuthorities().stream()
+                        .map(GrantedAuthority::getAuthority)
+                        .collect(Collectors.joining(",")))
+                .build());
+        memberRedisSvc.saveMemberAccessToken(RedisMemberAccessToken.builder()
+                .jwt(jwt)
+                .memberIdx(userPrincipal.getIdx())
+                .expiredTime(Duration.between(LocalDateTime.now(), jwtExpiration).getSeconds())
+                .build());
 
         return userPrincipal;
     }

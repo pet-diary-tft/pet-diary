@@ -106,13 +106,11 @@ public class AuthSvc {
                 .roles(principal.getAuthorities().stream()
                         .map(GrantedAuthority::getAuthority)
                         .collect(Collectors.joining(",")))
-                .tokenVersion(1)
                 .build());
         memberRedisSvc.saveMemberAccessToken(RedisMemberAccessToken.builder()
                 .jwt(jwt)
                 .memberIdx(memberIdx)
-                .tokenVersion(1)
-                .expiredTime(60 * 30)
+                .expiredTime(authJwtProperties.getExpiryInMs() / 1000)
                 .build());
 
         // 4. resDto
@@ -162,13 +160,11 @@ public class AuthSvc {
                 .roles(member.getRoles().stream()
                         .map(Enum::name)
                         .collect(Collectors.joining(",")))
-                .tokenVersion(1)
                 .build());
         memberRedisSvc.saveMemberAccessToken(RedisMemberAccessToken.builder()
                 .jwt(jwt)
                 .memberIdx(memberIdx)
-                .tokenVersion(1)
-                .expiredTime(60 * 30)
+                .expiredTime(authJwtProperties.getExpiryInMs() / 1000)
                 .build());
 
         // 6. resDto 반환
@@ -217,4 +213,5 @@ public class AuthSvc {
                 .name(member.getName())
                 .build();
     }
+
 }

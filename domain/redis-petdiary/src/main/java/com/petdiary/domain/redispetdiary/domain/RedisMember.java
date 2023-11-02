@@ -15,5 +15,4 @@ public class RedisMember {
     private String name;
     private Byte status;
     private String roles;
-    private Integer tokenVersion;
 }

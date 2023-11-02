@@ -7,6 +7,8 @@ import com.petdiary.domain.redispetdiary.repository.RedisMemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class MemberRedisSvc {
@@ -25,5 +27,10 @@ public class MemberRedisSvc {
         RedisMemberAccessToken redisMemberAccessToken = redisMemberAccessTokenRepository.findById(jwt).orElse(null);
         if (redisMemberAccessToken == null) return null;
         return redisMemberRepository.findById(redisMemberAccessToken.getMemberIdx()).orElse(null);
+    }
+
+    public void deleteAllAccessTokenByMemberIdx(Long memberIdx) {
+        List<RedisMemberAccessToken> redisMemberAccessTokenList = redisMemberAccessTokenRepository.findByMemberIdx(memberIdx);
+        redisMemberAccessTokenList.forEach(redisMemberAccessToken -> redisMemberAccessTokenRepository.deleteById(redisMemberAccessToken.getJwt()));
     }
 }

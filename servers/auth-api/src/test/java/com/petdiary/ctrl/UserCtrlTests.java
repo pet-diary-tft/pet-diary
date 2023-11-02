@@ -6,21 +6,42 @@ import com.petdiary.controller.UserCtrl;
 import com.petdiary.core.exception.ResponseCode;
 import com.petdiary.ctrl.config.CtrlTestConfig;
 import com.petdiary.ctrl.config.TestConstants;
+import com.petdiary.ctrl.factory.UserDtoFactory;
+import com.petdiary.domain.rdspetdiarymembershipdb.repository.MemberRepository;
+import com.petdiary.domain.redispetdiary.service.MemberRedisSvc;
+import com.petdiary.dto.req.UserReq;
 import com.petdiary.service.UserSvc;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.context.annotation.Import;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(UserCtrl.class)
-@Import(UserSvc.class) // 실제 UserSvc를 사용
 public class UserCtrlTests extends CtrlTestConfig {
+    @SpyBean
+    private UserSvc userSvc;
+
+    @MockBean
+    private MemberRepository memberRepository;
+
+    @MockBean
+    private PasswordEncoder passwordEncoder;
+
+    @MockBean
+    private MemberRedisSvc memberRedisSvc;
+
     @Test
     public void testMyLoggedIn() throws Exception {
         mockMvc.perform(get("/api/v1/user/my"))
@@ -67,6 +88,26 @@ public class UserCtrlTests extends CtrlTestConfig {
                                                 fieldWithPath("body.loggedIn").description("로그인 상태")
                                         )
                                 )
+                                .build()
+                )));
+    }
+
+
+    @Test
+    public void testChangePassword() throws Exception {
+        UserReq.ChangePasswordDto reqDto = UserDtoFactory.createChangePasswordReqDto();
+        String jsonContent = getJsonContent(reqDto);
+
+        doNothing().when(userSvc).changePassword(any(), any());
+
+        mockMvc.perform(put("/api/v1/user/change-password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonContent))
+                .andExpect(status().is2xxSuccessful())
+                .andDo(document(getDocumentName(), ResourceDocumentation.resource(
+                        ResourceSnippetParameters.builder()
+                                .tag("UserCtrl")
+                                .description("비밀번호 변경")
                                 .build()
                 )));
     }

@@ -29,11 +29,12 @@ public class RedisPetDiaryAspect {
         log.debug("[Redis Repository Call] Entered {} with argument[s] = {}", joinPoint.getSignature().toShortString(), arguments);
         try {
             Object result = joinPoint.proceed();
-            log.debug("[Redis Repository Call] Exited {} with result = {}", joinPoint.getSignature().toShortString(), result.toString());
+            log.debug("[Redis Repository Call] Exited {} with result = {}", joinPoint.getSignature().toShortString(), result == null ? "" : result.toString());
             return result;
         } catch (IllegalArgumentException e) {
             log.debug("[Redis Repository Call] Illegal argument: {} in {}", arguments, joinPoint.getSignature().toShortString());
-            throw e;
+            // throw e;
+            return null;
         }
     }
 }
