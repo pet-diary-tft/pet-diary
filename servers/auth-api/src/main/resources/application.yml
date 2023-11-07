@@ -39,6 +39,27 @@ spring:
         default-page-size: 20
         max-page-size: 100
         one-indexed-parameters: true
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id: ENC(Hd6fV7EhSPupRfxU9g+gnFyoE/pJHK5Tvffli2T35EyWr1a1B30OACE/X8MksRg7)
+            client-secret: ENC(ImcTPyS2huuVo4ieOBmrHjeYKVZra5APW6Azg8G1cwreyqeZdDfsC7kCiGiyP/Jc)
+            redirect-uri: "{baseUrl}/oauth2/code/{registrationId}" # http://localhost:8080/oauth2/code/kakao
+            client-authentication-method: client_secret_post
+            authorization-grant-type: authorization_code
+            scope:
+              - profile_nickname
+              - profile_image
+              - account_email
+            client-name: Kakao
+        provider:
+          kakao:
+            authorization_uri: https://kauth.kakao.com/oauth/authorize
+            token_uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user_name_attribute: id
 
 auth:
   jwt:

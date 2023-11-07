@@ -1,10 +1,7 @@
 package com.petdiary.config;
 
 import com.petdiary.properties.CorsProperties;
-import com.petdiary.security.ApiAccessDeniedHandler;
-import com.petdiary.security.ApiAuthenticationEntryPoint;
-import com.petdiary.security.ApiAuthenticationFilter;
-import com.petdiary.security.ApiUserDetailService;
+import com.petdiary.security.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -43,7 +40,8 @@ public class SecurityConfig {
             "/swagger-ui.html",
             "/api/v1/auth/**",
             "/api/v1/status/**",
-            "/actuator/prometheus"
+            "/actuator/prometheus",
+            "/oauth2/**"
     };
 
     /**
@@ -57,6 +55,7 @@ public class SecurityConfig {
     private final ApiAuthenticationEntryPoint apiAuthenticationEntryPoint;
     private final ApiAccessDeniedHandler apiAccessDeniedHandler;
     private final ApiUserDetailService apiUserDetailService;
+    private final ApiOauth2AuthenticationSuccessHandler apiOauth2AuthenticationSuccessHandler;
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -104,6 +103,21 @@ public class SecurityConfig {
                                 .requestMatchers(PERMIT_AREA).permitAll()
                                 .requestMatchers(PERMIT_AREA_WITH_PRINCIPAL).permitAll()
                                 .anyRequest().authenticated()
+                )
+                .oauth2Login(oauth2Configurer -> oauth2Configurer
+                        .authorizationEndpoint(authEndpointConfig ->
+                                authEndpointConfig
+                                        .baseUri("/oauth2/authorization")
+                        )
+                        .redirectionEndpoint(redirectionEndpointConfig ->
+                                redirectionEndpointConfig
+                                        .baseUri("/oauth2/code/*")
+                        )
+//                        .userInfoEndpoint(userInfoEndpointConfig ->
+//                                userInfoEndpointConfig
+//                                        .userService(apiOauth2Service)
+//                        )
+                        .successHandler(apiOauth2AuthenticationSuccessHandler)
                 )
                 .addFilterBefore(new ApiAuthenticationFilter(PERMIT_AREA, apiUserDetailService), UsernamePasswordAuthenticationFilter.class);
         return http.build();

@@ -48,3 +48,7 @@ cors:
 auth:
   jwt:
     secret: 2bf0bacbc66ce8638bfbc35d5541e20df0acf33a0bf3c6ca75dc146b1dcfbbc636db30003674bca49b49026dfa37aad315d7ec314436c867841536a9ce18bcf3
+
+oauth2:
+  client:
+    front-redirect-uri: http://localhost:3080

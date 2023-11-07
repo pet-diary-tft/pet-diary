@@ -50,3 +50,7 @@ cors:
     - https://kjb4494.site
     - https://www.kjb4494.site
     - https://swagger.kjb4494.site
+
+oauth2:
+  client:
+    front-redirect-uri: https://kjb4494.site
