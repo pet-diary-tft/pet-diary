@@ -17,6 +17,10 @@
     - S3
     - ECR
     - ECS
+- 소셜 로그인 구현
+  - 구글
+  - 카카오
+  - 네이버
 - 참고 문서 및 코드
   - [_Jasypt 암호화_](./core/src/test/java/JasyptTests.java)
   - [_mysql & redis_](./domain/README.md)

@@ -14,6 +14,8 @@ import HelloWorld from './components/HelloWorld.vue'
         <RouterLink to="/">Home</RouterLink>
         <!-- <RouterLink to="/about">About</RouterLink> -->
         <RouterLink to="/oauth2/kakao">Kakao</RouterLink>
+        <RouterLink to="/oauth2/google">Google</RouterLink>
+        <RouterLink to="/oauth2/naver">Naver</RouterLink>
       </nav>
     </div>
   </header>

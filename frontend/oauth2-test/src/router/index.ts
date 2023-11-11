@@ -12,10 +12,17 @@ const router = createRouter({
     {
       path: '/oauth2/kakao',
       name: 'oauth2-kakao',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
       component: () => import('../views/Oauth2KakaoView.vue')
+    },
+    {
+      path: '/oauth2/google',
+      name: 'oauth2-google',
+      component: () => import('../views/Oauth2GoogleView.vue')
+    },
+    {
+      path: '/oauth2/naver',
+      name: 'oauth2-naver',
+      component: () => import('../views/Oauth2NaverView.vue')
     }
   ]
 })

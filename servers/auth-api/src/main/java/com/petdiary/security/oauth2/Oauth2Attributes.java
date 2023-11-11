@@ -21,7 +21,9 @@ public class Oauth2Attributes {
         this.memberSocialType = memberSocialType;
         this.nameAttributeKey = nameAttributeKey;
         switch (memberSocialType) {
-            default -> this.oauth2UserInfo = new KakaoUserInfo(attributes);
+            case KAKAO -> this.oauth2UserInfo = new KakaoUserInfo(attributes);
+            case NAVER -> this.oauth2UserInfo = new NaverUserInfo(attributes);
+            default -> this.oauth2UserInfo = new GoogleUserInfo(attributes);
         }
     }
 

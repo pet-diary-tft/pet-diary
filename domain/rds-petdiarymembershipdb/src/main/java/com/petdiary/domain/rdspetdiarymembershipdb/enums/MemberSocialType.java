@@ -4,7 +4,10 @@ import com.petdiary.core.utils.StringUtil;
 
 public enum MemberSocialType {
     NONE("none", "일반가입"),
-    KAKAO("kakao", "카카오");
+    KAKAO("kakao", "카카오"),
+    GOOGLE("google", "구글"),
+    NAVER("naver", "네이버"),
+    ;
 
     private final String registrationId;
     private final String desc;

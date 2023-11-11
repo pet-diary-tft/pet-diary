@@ -15,8 +15,8 @@ create table member
     social_email            varchar(255)  null comment '소셜 회원 이메일',
     constraint member_UN_email
         unique (email),
-    constraint member_UN_name
-        unique (name)
+    constraint member_UN_social_type_social_id
+        unique (social_type, social_id)
 )
     comment '회원';
 

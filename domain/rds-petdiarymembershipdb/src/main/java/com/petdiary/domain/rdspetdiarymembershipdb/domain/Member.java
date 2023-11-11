@@ -27,7 +27,7 @@ public class Member {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "name", unique = true, nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "social_type")
