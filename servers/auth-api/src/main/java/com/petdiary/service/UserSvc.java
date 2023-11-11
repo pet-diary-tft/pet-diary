@@ -1,5 +1,6 @@
 package com.petdiary.service;
 
+import com.petdiary.domain.rdspetdiarymembershipdb.enums.MemberSocialType;
 import com.petdiary.domain.rdspetdiarymembershipdb.repository.MemberRepository;
 import com.petdiary.domain.redispetdiary.service.MemberRedisSvc;
 import com.petdiary.dto.req.UserReq;
@@ -39,17 +40,22 @@ public class UserSvc {
 
     @Transactional
     public void changePassword(ApiUserPrincipal principal, UserReq.ChangePasswordDto reqDto) {
-        // 1. 이전 비밀번호 확인
+        // 1. 소셜 로그인 회원
+        if (!principal.getSocialType().equals(MemberSocialType.NONE)) {
+            throw new ApiRestException(ApiResponseCode.IS_SOCIAL_LOGIN_MEMBER);
+        }
+
+        // 2. 이전 비밀번호 확인
         if (!passwordEncoder.matches(reqDto.getOldPassword(), principal.getPassword())) {
             throw new ApiRestException(ApiResponseCode.OLD_PASSWORD_CONFIRM);
         }
 
-        // 2. 비밀번호 확인 일치 검증
+        // 3. 비밀번호 확인 일치 검증
         if (!reqDto.getNewPassword().equals(reqDto.getNewPasswordConfirm())) {
             throw new ApiRestException(ApiResponseCode.PASSWORD_CONFIRM);
         }
 
-        // 3. 비밀번호 변경 및 기존 토큰 무효화
+        // 4. 비밀번호 변경 및 기존 토큰 무효화
         int updateCount = memberRepository.changePassword(principal.getIdx(), passwordEncoder.encode(reqDto.getNewPassword()), LocalDateTime.now());
         if (updateCount < 1) {
             throw new ApiRestException(ApiResponseCode.MEMBER_NOT_FOUND);

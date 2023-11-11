@@ -2,6 +2,7 @@ package com.petdiary.ctrl.config;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.petdiary.domain.rdspetdiarymembershipdb.enums.MemberSocialType;
 import com.petdiary.domain.rdspetdiarymembershipdb.enums.MemberStatusType;
 import com.petdiary.security.ApiUserPrincipal;
 import org.junit.jupiter.api.BeforeEach;
@@ -59,6 +60,7 @@ public abstract class CtrlTestConfig {
                 .name(TestConstants.TEST_USER_NAME)
                 .authorities(Collections.singleton(new SimpleGrantedAuthority("USER")))
                 .status(MemberStatusType.VERIFIED)
+                .socialType(MemberSocialType.KAKAO)
                 .build();
         Authentication auth = new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(auth);

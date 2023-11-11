@@ -51,6 +51,7 @@ public class UserCtrlTests extends CtrlTestConfig {
                 .andExpect(jsonPath("$.body.email").value(TestConstants.TEST_USER_EMAIL))
                 .andExpect(jsonPath("$.body.name").value(TestConstants.TEST_USER_NAME))
                 .andExpect(jsonPath("$.body.loggedIn").value(true))
+                .andExpect(jsonPath("$.body.socialType").value(TestConstants.TEST_USER_SOCIAL_TYPE))
                 .andDo(document(getDocumentName(), ResourceDocumentation.resource(
                         ResourceSnippetParameters.builder()
                                 .tag("UserCtrl")
@@ -60,7 +61,8 @@ public class UserCtrlTests extends CtrlTestConfig {
                                                 fieldWithPath("body.idx").description("회원 고유번호"),
                                                 fieldWithPath("body.email").description("이메일"),
                                                 fieldWithPath("body.name").description("닉네임"),
-                                                fieldWithPath("body.loggedIn").description("로그인 상태")
+                                                fieldWithPath("body.loggedIn").description("로그인 상태"),
+                                                fieldWithPath("body.socialType").description("소셜 로그인 공급자")
                                         )
                                 )
                                 .build()
@@ -85,7 +87,8 @@ public class UserCtrlTests extends CtrlTestConfig {
                                                 fieldWithPath("body.idx").description("회원 고유번호"),
                                                 fieldWithPath("body.email").description("이메일"),
                                                 fieldWithPath("body.name").description("닉네임"),
-                                                fieldWithPath("body.loggedIn").description("로그인 상태")
+                                                fieldWithPath("body.loggedIn").description("로그인 상태"),
+                                                fieldWithPath("body.socialType").description("소셜 로그인 공급자")
                                         )
                                 )
                                 .build()
