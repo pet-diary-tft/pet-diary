@@ -3,21 +3,15 @@ package com.petdiary.security;
 import com.petdiary.core.exception.ResponseCode;
 import com.petdiary.core.utils.DateUtil;
 import com.petdiary.core.utils.HttpUtil;
-import com.petdiary.core.utils.StringUtil;
 import com.petdiary.domain.rdspetdiarymembershipdb.domain.Member;
-import com.petdiary.domain.rdspetdiarymembershipdb.enums.MemberRoleType;
-import com.petdiary.domain.rdspetdiarymembershipdb.enums.MemberStatusType;
 import com.petdiary.domain.rdspetdiarymembershipdb.repository.MemberRepository;
 import com.petdiary.domain.redispetdiary.domain.RedisMember;
-import com.petdiary.domain.redispetdiary.domain.RedisMemberAccessToken;
 import com.petdiary.domain.redispetdiary.service.MemberRedisSvc;
 import com.petdiary.properties.AuthJwtProperties;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -28,8 +22,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +29,7 @@ public class ApiUserDetailService implements UserDetailsService {
     private final MemberRepository memberRepository;
     private final AuthJwtProperties authJwtProperties;
     private final MemberRedisSvc memberRedisSvc;
+    private final ApiUserCachingService apiUserCachingService;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -58,22 +51,9 @@ public class ApiUserDetailService implements UserDetailsService {
         }
 
         // 1-1. jwt로 캐싱 정보 확인
-        RedisMember cachingMember = memberRedisSvc.getMemberByAccessToken(jwt);
-        if (cachingMember != null) {
-            Set<GrantedAuthority> authorities = StringUtil.stringToEnumSet(cachingMember.getRoles(), MemberRoleType.class)
-                    .stream()
-                    .map(role -> new SimpleGrantedAuthority(role.name()))
-                    .collect(Collectors.toSet());
-
-            return ApiUserPrincipal.builder()
-                    .idx(cachingMember.getIdx())
-                    .email(cachingMember.getEmail())
-                    .password(cachingMember.getPassword())
-                    .name(cachingMember.getName())
-                    .status(MemberStatusType.getByCode(cachingMember.getStatus()))
-                    .authorities(authorities)
-                    .build();
-        }
+        RedisMember redisMember = memberRedisSvc.getMemberByAccessToken(jwt);
+        ApiUserPrincipal principal = ApiUserPrincipal.create(redisMember);
+        if (principal != null) return principal;
 
         // 2. jwt 값 검증
         Jws<Claims> claimsJws;
@@ -134,21 +114,7 @@ public class ApiUserDetailService implements UserDetailsService {
         }
 
         // 6. redis caching
-        memberRedisSvc.saveMember(RedisMember.builder()
-                .idx(userPrincipal.getIdx())
-                .email(userPrincipal.getEmail())
-                .password(userPrincipal.getPassword())
-                .name(userPrincipal.getName())
-                .status(userPrincipal.getStatus().getCode())
-                .roles(userPrincipal.getAuthorities().stream()
-                        .map(GrantedAuthority::getAuthority)
-                        .collect(Collectors.joining(",")))
-                .build());
-        memberRedisSvc.saveMemberAccessToken(RedisMemberAccessToken.builder()
-                .jwt(jwt)
-                .memberIdx(userPrincipal.getIdx())
-                .expiredTime(Duration.between(LocalDateTime.now(), jwtExpiration).getSeconds())
-                .build());
+        apiUserCachingService.cachingMember(userPrincipal, jwt, Duration.between(LocalDateTime.now(), jwtExpiration).getSeconds());
 
         return userPrincipal;
     }

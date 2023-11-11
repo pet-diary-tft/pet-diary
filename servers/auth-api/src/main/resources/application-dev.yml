@@ -54,3 +54,4 @@ cors:
 oauth2:
   client:
     front-redirect-uri: https://kjb4494.site
+    error-front-redirect-uri: https://kjb4494.stie/error

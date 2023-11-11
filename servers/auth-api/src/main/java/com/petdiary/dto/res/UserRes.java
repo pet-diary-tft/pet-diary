@@ -9,6 +9,7 @@ public class UserRes {
         private Long idx;
         private String email;
         private String name;
+        private String socialType;
         private boolean loggedIn;
     }
 }

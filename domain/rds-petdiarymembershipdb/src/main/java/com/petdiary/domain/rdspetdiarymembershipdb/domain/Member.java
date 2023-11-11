@@ -1,8 +1,10 @@
 package com.petdiary.domain.rdspetdiarymembershipdb.domain;
 
 import com.petdiary.domain.rdspetdiarymembershipdb.converters.MemberRoleConverter;
+import com.petdiary.domain.rdspetdiarymembershipdb.converters.MemberSocialConverter;
 import com.petdiary.domain.rdspetdiarymembershipdb.converters.MemberStatusConverter;
 import com.petdiary.domain.rdspetdiarymembershipdb.enums.MemberRoleType;
+import com.petdiary.domain.rdspetdiarymembershipdb.enums.MemberSocialType;
 import com.petdiary.domain.rdspetdiarymembershipdb.enums.MemberStatusType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,14 +21,24 @@ public class Member {
     @Column(name = "idx")
     private Long idx;
 
-    @Column(name = "email", unique = true, nullable = false)
+    @Column(name = "email", unique = true)
     private String email;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "password")
     private String password;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", unique = true, nullable = false)
     private String name;
+
+    @Column(name = "social_type")
+    @Convert(converter = MemberSocialConverter.class)
+    private MemberSocialType socialType;
+
+    @Column(name = "social_id")
+    private String socialId;
+
+    @Column(name = "social_email")
+    private String socialEmail;
 
     @Column(name = "created_date", nullable = false)
     private LocalDateTime createdDate;

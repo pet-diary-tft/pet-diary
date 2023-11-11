@@ -33,6 +33,7 @@ public class UserSvc {
                 .idx(principal.getIdx())
                 .email(principal.getEmail())
                 .name(principal.getName())
+                .socialType(principal.getSocialType().getRegistrationId())
                 .build();
     }
 

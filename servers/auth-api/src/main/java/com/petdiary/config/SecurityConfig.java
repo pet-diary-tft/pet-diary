@@ -2,6 +2,9 @@ package com.petdiary.config;
 
 import com.petdiary.properties.CorsProperties;
 import com.petdiary.security.*;
+import com.petdiary.security.oauth2.ApiOauth2AuthenticationFailureHandler;
+import com.petdiary.security.oauth2.ApiOauth2AuthenticationSuccessHandler;
+import com.petdiary.security.oauth2.ApiOauth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -56,6 +59,8 @@ public class SecurityConfig {
     private final ApiAccessDeniedHandler apiAccessDeniedHandler;
     private final ApiUserDetailService apiUserDetailService;
     private final ApiOauth2AuthenticationSuccessHandler apiOauth2AuthenticationSuccessHandler;
+    private final ApiOauth2AuthenticationFailureHandler apiOauth2AuthenticationFailureHandler;
+    private final ApiOauth2UserService apiOauth2UserService;
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -113,11 +118,12 @@ public class SecurityConfig {
                                 redirectionEndpointConfig
                                         .baseUri("/oauth2/code/*")
                         )
-//                        .userInfoEndpoint(userInfoEndpointConfig ->
-//                                userInfoEndpointConfig
-//                                        .userService(apiOauth2Service)
-//                        )
+                        .userInfoEndpoint(userInfoEndpointConfig ->
+                                userInfoEndpointConfig
+                                        .userService(apiOauth2UserService)
+                        )
                         .successHandler(apiOauth2AuthenticationSuccessHandler)
+                        .failureHandler(apiOauth2AuthenticationFailureHandler)
                 )
                 .addFilterBefore(new ApiAuthenticationFilter(PERMIT_AREA, apiUserDetailService), UsernamePasswordAuthenticationFilter.class);
         return http.build();

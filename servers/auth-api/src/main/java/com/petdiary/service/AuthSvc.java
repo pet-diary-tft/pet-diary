@@ -11,14 +11,12 @@ import com.petdiary.domain.rdspetdiarymembershipdb.enums.MemberRoleType;
 import com.petdiary.domain.rdspetdiarymembershipdb.enums.MemberStatusType;
 import com.petdiary.domain.rdspetdiarymembershipdb.repository.MemberRefreshTokenRepository;
 import com.petdiary.domain.rdspetdiarymembershipdb.repository.MemberRepository;
-import com.petdiary.domain.redispetdiary.domain.RedisMember;
-import com.petdiary.domain.redispetdiary.domain.RedisMemberAccessToken;
-import com.petdiary.domain.redispetdiary.service.MemberRedisSvc;
 import com.petdiary.dto.req.AuthReq;
 import com.petdiary.dto.res.AuthRes;
 import com.petdiary.exception.ApiResponseCode;
 import com.petdiary.exception.ApiRestException;
 import com.petdiary.properties.AuthJwtProperties;
+import com.petdiary.security.ApiUserCachingService;
 import com.petdiary.security.ApiUserPrincipal;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -26,7 +24,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -38,7 +35,6 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -48,7 +44,7 @@ public class AuthSvc {
     private final AuthenticationManager authenticationManager;
     private final AuthJwtProperties authJwtProperties;
     private final PasswordEncoder passwordEncoder;
-    private final MemberRedisSvc memberRedisSvc;
+    private final ApiUserCachingService apiUserCachingService;
 
     @Transactional
     public AuthRes.LoginDto login(AuthReq.LoginDto reqDto, String userAgent, String clientIp) throws NoSuchAlgorithmException {
@@ -97,21 +93,7 @@ public class AuthSvc {
         memberRefreshTokenRepository.save(rt);
 
         // 3-3. Redis Caching
-        memberRedisSvc.saveMember(RedisMember.builder()
-                .idx(memberIdx)
-                .email(principal.getEmail())
-                .password(principal.getPassword())
-                .name(principal.getName())
-                .status(principal.getStatus().getCode())
-                .roles(principal.getAuthorities().stream()
-                        .map(GrantedAuthority::getAuthority)
-                        .collect(Collectors.joining(",")))
-                .build());
-        memberRedisSvc.saveMemberAccessToken(RedisMemberAccessToken.builder()
-                .jwt(jwt)
-                .memberIdx(memberIdx)
-                .expiredTime(authJwtProperties.getExpiryInMs() / 1000)
-                .build());
+        apiUserCachingService.cachingMember(principal, jwt, Long.valueOf(authJwtProperties.getExpiryInMs() / 1000));
 
         // 4. resDto
         return AuthRes.LoginDto.builder()
@@ -151,21 +133,7 @@ public class AuthSvc {
         memberRepository.save(member);
 
         // 6. Redis Caching
-        memberRedisSvc.saveMember(RedisMember.builder()
-                .idx(memberIdx)
-                .email(member.getEmail())
-                .password(member.getPassword())
-                .name(member.getName())
-                .status(member.getStatusCode().getCode())
-                .roles(member.getRoles().stream()
-                        .map(Enum::name)
-                        .collect(Collectors.joining(",")))
-                .build());
-        memberRedisSvc.saveMemberAccessToken(RedisMemberAccessToken.builder()
-                .jwt(jwt)
-                .memberIdx(memberIdx)
-                .expiredTime(authJwtProperties.getExpiryInMs() / 1000)
-                .build());
+        apiUserCachingService.cachingMember(member, jwt, Long.valueOf(authJwtProperties.getExpiryInMs() / 1000));
 
         // 6. resDto 반환
         return AuthRes.AccessTokenDto.builder()

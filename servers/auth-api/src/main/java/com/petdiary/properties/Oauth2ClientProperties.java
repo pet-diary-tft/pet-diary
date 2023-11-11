@@ -10,4 +10,5 @@ import org.springframework.stereotype.Component;
 @Getter @Setter
 public class Oauth2ClientProperties {
     private String frontRedirectUri;
+    private String errorFrontRedirectUri;
 }
