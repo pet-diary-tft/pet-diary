@@ -35,3 +35,13 @@ logging:
     com.petdiary: debug
     org.hibernate.sql: debug
     org.hibernate.type.descriptor.sql: trace
+
+
+cors:
+  allowed-credentials: true
+  allowed-header: "*"
+  allowed-method: "*"
+  allowed-origins:
+    - https://kjb4494.site
+    - https://www.kjb4494.site
+    - https://swagger.kjb4494.site

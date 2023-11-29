@@ -38,3 +38,4 @@ out/
 
 ### Swagger OpenAPI 3 Generated Files ###
 /servers/auth-api/src/main/resources/static/swagger-ui/openapi3.yaml
+/servers/web-api/src/main/resources/static/swagger-ui/openapi3.yaml

@@ -6,3 +6,11 @@
   -Duser.timezone=UTC -Djasypt.encryptor.password=RlVdb0UHFlTVTi2VUnHMLnfAfoEB7dDbztnFuphpafjg1z4SMxeBEsF4fKmt7zY0
   ```
   위 코드는 예제입니다. Djasypt.encryptor.password 값으로 실제 키를 넣어줘야 합니다.
+
+### 문서 자동화
+- pet-diary > servers > web-api > documentation > openapi3 실행
+- [_http://localhost:8082/swagger-ui.html_](http://localhost:8082/swagger-ui.html) 접속
+- docker swagger-ui 사용시
+  ```shell
+  sudo docker run -d -p 8080:8080 -e URLS='[{"url": "http://localhost:8082/static/swagger-ui/openapi3.yaml", "name": "pet-diary-web-api"}]' --name swagger swaggerapi/swagger-ui
+  ```
