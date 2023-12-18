@@ -14,4 +14,8 @@ include 'domain:redis-petdiary'
 findProject(':domain:redis-petdiary')?.name = 'redis-petdiary'
 include 'domain:redis-core'
 findProject(':domain:redis-core')?.name = 'redis-core'
+include 'clients:petdiary-auth-client'
+findProject(':clients:petdiary-auth-client')?.name = 'petdiary-auth-client'
+include 'clients:client-core'
+findProject(':clients:client-core')?.name = 'client-core'
 

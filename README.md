@@ -7,9 +7,10 @@
 ### Design
 
 ### Backend
-- corretto-20.0.1
-- spring boot 3.1.1
-- gradle 8.1.1
+- corretto-21.0.1
+- spring boot 3.2.0
+- undertow
+- gradle 8.5
 - jpa(Java Persistent API)
 - 사용 예정 AWS 서비스
     - SES
