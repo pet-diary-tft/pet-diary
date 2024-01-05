@@ -45,3 +45,7 @@ cors:
     - https://kjb4494.site
     - https://www.kjb4494.site
     - https://swagger.kjb4494.site
+
+pet-diary-auth-client:
+  base-url: https://auth-api.kjb4494.site
+  token-type: Bearer

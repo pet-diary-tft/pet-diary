@@ -44,3 +44,7 @@ cors:
   allowed-origins:
     - http://localhost:3000
     - http://localhost:8080
+
+pet-diary-auth-client:
+  base-url: http://localhost:8081
+  token-type: Bearer
